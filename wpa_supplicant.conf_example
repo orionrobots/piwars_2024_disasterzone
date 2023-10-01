@@ -1,0 +1,16 @@
+# copy this to wpa_supplicant, but with your credentials
+country=GB
+update_config=1
+ctrl_interface=/var/run/wpa_supplicant
+
+network={
+    priority=1
+    ssid="Wifi network 1 name"
+    psk="Wifi network 1 password"
+}
+
+network={
+    priority=2
+    ssid="Wifi network 2 name"
+    psk="Wifi network 2  password"
+}
