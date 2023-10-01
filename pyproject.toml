@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "piwars-2024-disasterzone"
+version = "0.1.0"
+description = ""
+authors = ["Danny Staple <danny@orionrobots.co.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fabric = "^3.2.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
