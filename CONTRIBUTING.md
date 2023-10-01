@@ -10,3 +10,5 @@ We use poetry to manage our environment. You can install it with:
 pip install poetry
 poetry install
 ```
+
+To work in the project use `poetry shell` to activate the environment.
