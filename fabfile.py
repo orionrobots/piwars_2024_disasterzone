@@ -15,6 +15,12 @@ def deploy_adafruit_stepper_motor_hat(c):
     c.sudo("pip3 install adafruit-circuitpython-motorkit")
 
 @task
+def deploy_adafruit_crickit(c):
+    # maybe need RPI.GPIO
+    c.sudo("pip3 install Adafruit-Blinka")
+    c.run("pip3 install adafruit-circuitpython-crickit")
+
+@task
 def show_i2c_devices(c):
     c.run("/usr/sbin/i2cdetect -y 1")
     c.run("/usr/sbin/i2cdetect -y 0")
