@@ -1,4 +1,6 @@
 from fabric import task
+from invoke import Collection
+from dfrobot_gravity.install_tasks import dfrobot_gravity
 
 @task
 def deploy_system(c):
@@ -27,3 +29,7 @@ def show_i2c_devices(c):
 @task
 def power_off(c):
     c.sudo("poweroff")
+
+# Add the gravity installer to the root collection
+ns = Collection()
+ns.add_collection(dfrobot_gravity)
