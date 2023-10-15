@@ -23,7 +23,6 @@ def deploy_adafruit_crickit(c):
 @task
 def show_i2c_devices(c):
     c.run("/usr/sbin/i2cdetect -y 1")
-    c.run("/usr/sbin/i2cdetect -y 0")
 
 @task
 def power_off(c):
