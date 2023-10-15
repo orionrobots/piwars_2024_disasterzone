@@ -32,9 +32,18 @@ Copy the VPA config example on wpa_supplicant.conf_example to wpa_supplicant.con
 
 ## Running commands
 
+We suggest making a copy of .env_example to .env, with your pi details.
+That way, you can then use `source .env` to have your PI hostname in $HOST. Handy if you sometimes forget!
+
 To list target:
 `fab --list`
 
 Run a target remotely:
 
-`fab -H <username>@<hostname>.local <taskname>`
+`fab -H $HOST -e <taskname>`
+
+Note the `-e` option will echo the command.
+
+To run arbitrary commands remotely:
+
+`fab -H $HOST -- <command>`

@@ -1,4 +1,4 @@
-from adafruit_crickit_robot import Robot
+from robot import Robot
 import time
 
 robot = Robot()
