@@ -2,10 +2,10 @@ from fabric import task
 
 @task
 def deploy_system(c):
-    c.sudo("apt-get install -y python3-pip python3-smbus i2c-tools git")
-    c.sudo("raspi-config nonint do_i2c 0") # 0 enables interface
     c.sudo("apt-get update")
     c.sudo("apt-get upgrade -y")
+    c.sudo("apt-get install -y python3-pip python3-smbus i2c-tools git")
+    c.sudo("raspi-config nonint do_i2c 0") # 0 enables interface
     c.sudo("reboot")
 
 @task
