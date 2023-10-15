@@ -13,6 +13,7 @@ def install(c):
     # run the setup task above
     setup_adafruit_crickit(c)
     c.put("adafruit_crickit/robot.py", "robot.py")
+    c.put("adafruit_crickit/test_crickit_motors.py")
 
 adafruit_crickit = Collection("adafruit_crickit")
 adafruit_crickit.add_task(install, "install")
