@@ -3,7 +3,7 @@ import time
 
 robot = Robot()
 
-robot.forwards()
+robot.forward()
 time.sleep(0.5)
 robot.backwards()
 time.sleep(0.5)

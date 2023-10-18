@@ -5,6 +5,7 @@ import patchwork.transfers
 from dfrobot_gravity.install_tasks import dfrobot_gravity
 from adafruit_crickit.install_tasks import adafruit_crickit
 from adafruit_stepper_motor_hat.install_tasks import adafruit_stepper_motor_hat
+from redrobotics_redboard.install_tasks import redrobotics_redboard
 
 @task
 def deploy_system(c):
@@ -31,6 +32,7 @@ ns = Collection()
 ns.add_collection(dfrobot_gravity)
 ns.add_collection(adafruit_crickit)
 ns.add_collection(adafruit_stepper_motor_hat)
+ns.add_collection(redrobotics_redboard)
 # Add all the tasks above to the root collection
 ns.add_task(deploy_system, "deploy_system")
 ns.add_task(show_i2c_devices, "show_i2c_devices")

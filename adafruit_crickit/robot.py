@@ -10,7 +10,7 @@ class Robot:
         self.left_motor.throttle = -speed + curve_left
         self.right_motor.throttle = -speed + curve_right
     
-    def forwards(self, speed=1, curve_left=0, curve_right=0):
+    def forward(self, speed=1, curve_left=0, curve_right=0):
         self.left_motor.throttle = speed - curve_left
         self.right_motor.throttle = speed - curve_right
 

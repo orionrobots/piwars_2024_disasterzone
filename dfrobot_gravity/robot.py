@@ -53,7 +53,7 @@ class Robot:
         self.left_motor = Motor(self.board, 0, 0)
         self.right_motor = Motor(self.board, 1, 1)
     
-    def forwards(self, speed=1, curve_left=0, curve_right=0):
+    def forward(self, speed=1, curve_left=0, curve_right=0):
         self.left_motor.forward(speed - curve_left)
         self.right_motor.forward(speed - curve_right)
 
