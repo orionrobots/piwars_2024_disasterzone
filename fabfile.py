@@ -1,5 +1,7 @@
 from fabric import task
 from invoke import Collection
+import patchwork.transfers
+
 from dfrobot_gravity.install_tasks import dfrobot_gravity
 from adafruit_crickit.install_tasks import adafruit_crickit
 from adafruit_stepper_motor_hat.install_tasks import adafruit_stepper_motor_hat
@@ -8,7 +10,7 @@ from adafruit_stepper_motor_hat.install_tasks import adafruit_stepper_motor_hat
 def deploy_system(c):
     c.sudo("apt-get update")
     c.sudo("apt-get upgrade -y")
-    c.sudo("apt-get install -y python3-pip python3-smbus i2c-tools git")
+    c.sudo("apt-get install -y python3-pip python3-smbus i2c-tools git python3-gpiozero")
     c.sudo("raspi-config nonint do_i2c 0") # 0 enables interface
     c.sudo("reboot")
 
@@ -22,7 +24,7 @@ def power_off(c):
 
 @task
 def put_code(c):
-    c.put("src", "~/src")
+    patchwork.transfers.rsync(c, "src/", "src")
 
 # Add the gravity installer to the root collection
 ns = Collection()

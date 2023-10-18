@@ -1,14 +1,13 @@
 import DFRobot_RaspberryPi_Expansion_Board
-import GPIOZero
+import gpiozero
 
 
-class Motor(GPIOZero.Device):
+class Motor(gpiozero.Device):
     def __init__(self, board :DFRobot_RaspberryPi_Expansion_Board.DFRobot_Expansion_Board_IIC, 
                  pwm_chan: int, phase: int):
         self.board = board
         self.pwm_chan = pwm_chan
-        self.phase = GPIOZero.DigitalOutputDevice(phase)
-        self.board.set_pwm_frequency(self.pwm_chan, 1000)
+        self.phase = gpiozero.DigitalOutputDevice(phase)
         self._throttle = 0
         
     def forward(self, speed: float=1):
@@ -31,13 +30,13 @@ class Motor(GPIOZero.Device):
     def value(self, value: float):
         self._throttle = value
         if value > 0:
-            self.phase.on()
+            self.phase.off()
             self.board.set_pwm_duty(self.pwm_chan, value * 100.0)
         elif value < 0:
-            self.phase.off()
+            self.phase.on()
             self.board.set_pwm_duty(self.pwm_chan, 100 - value * 100.0)
         else:
-            self.board.digital_write(self.phase, self.board.HIGH)
+            self.board.set_pwm_duty(self.pwm_chan, 0)
             self.phase.off()
 
     @property
@@ -47,9 +46,10 @@ class Motor(GPIOZero.Device):
 
 class Robot:
     def __init__(self) -> None:
-        self.board = DFRobot_RaspberryPi_Expansion_Board.DFRobot_Expansion_Board_IIC(0x10)
+        self.board = DFRobot_RaspberryPi_Expansion_Board.DFRobot_Expansion_Board_IIC(1, 0x10)
         self.board.begin()
         self.board.set_pwm_enable()
+        self.board.set_pwm_frequency(1000)
         self.left_motor = Motor(self.board, 0, 0)
         self.right_motor = Motor(self.board, 1, 1)
     

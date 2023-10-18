@@ -244,6 +244,31 @@ gssapi = ["gssapi (>=1.4.1)", "pyasn1 (>=0.1.7)", "pywin32 (>=2.1.8)"]
 invoke = ["invoke (>=2.0)"]
 
 [[package]]
+name = "patchwork"
+version = "2.0.0"
+description = "Deployment/sysadmin operations, powered by Fabric"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = []
+develop = false
+
+[package.dependencies]
+fabric = ">=2.2"
+
+[package.extras]
+dev = ["patchwork[test]", "pre-commit"]
+docs = ["alabaster", "releases", "sphinx"]
+test = ["invocations", "mock", "pytest", "pytest-relaxed"]
+test-cov = ["pytest-cov"]
+
+[package.source]
+type = "git"
+url = "https://github.com/LecrisUT/patchwork.git"
+reference = "fabric3"
+resolved_reference = "a252ad319e292a06c4a81d608561767faaf933fa"
+
+[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -370,4 +395,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "375d216b022d42aefd75f123bd202836197e3aa8a86cfd5d35099424e8d86812"
+content-hash = "41aa3b87595b39736bacc4a377d049791e889891f8a07eb12554249a222f0df5"

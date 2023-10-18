@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 fabric = "^3.2.2"
+patchwork = {git = "https://github.com/LecrisUT/patchwork.git", rev = "fabric3"}
 
 
 [build-system]
