@@ -57,7 +57,7 @@ class Robot:
         self.left_motor.forward(speed - curve_left)
         self.right_motor.forward(speed - curve_right)
 
-    def backwards(self, speed=1, curve_left=0, curve_right=0):
+    def backward(self, speed=1, curve_left=0, curve_right=0):
         self.left_motor.backward(speed + curve_left)
         self.right_motor.backward(speed + curve_right)
 

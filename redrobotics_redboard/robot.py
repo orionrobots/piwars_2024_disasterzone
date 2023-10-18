@@ -8,12 +8,12 @@ import gpiozero
 # dira -> 23
 # pwma -> 18
 # dirb -> 24
-# pwmb -> 19
+# pwmb -> 25
 
-class Robot(gpiozero.PhaseEnableRobot):
+class Robot(gpiozero.Robot):
     def __init__(self):
         m1_dir = 24
-        m1_pwm = 19
+        m1_pwm = 25
         m2_dir = 23
         m2_pwm = 18
-        super().__init__(left=(m1_dir, m1_pwm), right=(m2_dir, m2_pwm))
+        super().__init__(left=(m1_pwm, m1_dir), right=(m2_pwm, m2_dir))
