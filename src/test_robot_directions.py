@@ -2,7 +2,7 @@ from robot import Robot
 import time
 
 robot = Robot()
-speed = 0.4
+speed = 0.8
 
 print("left")
 robot.left(speed)

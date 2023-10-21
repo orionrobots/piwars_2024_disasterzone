@@ -41,8 +41,8 @@ class Motor(gpiozero.Device):
 class Robot:
     def __init__(self) -> None:
         self.board = inventorhatmini.InventorHATMini()
-        self.left_motor = Motor(self.board.motors[0])
-        self.right_motor = Motor(self.board.motors[1])
+        self.left_motor = Motor(self.board.motors[1])
+        self.right_motor = Motor(self.board.motors[0])
 
     def forward(self, speed=1, curve_left=0, curve_right=0):
         self.left_motor.forward(speed - curve_left)
