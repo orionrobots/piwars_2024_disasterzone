@@ -13,7 +13,7 @@ def setup_adafruit_stepper_motor_hat(c):
 def install(c):
     # run the setup task above
     setup_adafruit_stepper_motor_hat(c)
-    c.put("adafruit_stepper_motor_hat/robot.py", "robot.py")
+    c.put("adafruit_stepper_motor_hat/robot.py", "src/robot.py")
 
 adafruit_stepper_motor_hat = Collection("adafruit_stepper_motor_hat")
 adafruit_stepper_motor_hat.add_task(install, "install")
