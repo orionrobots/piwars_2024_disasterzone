@@ -16,6 +16,7 @@ def real_i2c(c):
 @task
 def software_i2c(c):
     """This is needed for clock stretching, eg the bno055"""
+    # See - https://gps-pie.com/pi_i2c_config.htm
     # Let's make clock stretching work
     c.sudo("raspi-config nonint do_i2c 1") # 1 disables interface
     overlay_line = "dtoverlay=i2c-gpio,bus=1,i2c_gpio_sda=02,i2c_gpio_scl=03"
