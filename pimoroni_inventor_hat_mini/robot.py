@@ -1,13 +1,10 @@
-import DFRobot_RaspberryPi_Expansion_Board
+import inventorhatmini
 import gpiozero
 
 
 class Motor(gpiozero.Device):
-    def __init__(self, board :DFRobot_RaspberryPi_Expansion_Board.DFRobot_Expansion_Board_IIC, 
-                 pwm_chan: int, phase: int):
-        self.board = board
-        self.pwm_chan = pwm_chan
-        self.phase = gpiozero.DigitalOutputDevice(phase)
+    def __init__(self, board_motor :inventorhatmini.Motor):
+        self._motor = board_motor
         self._throttle = 0
         
     def forward(self, speed: float=1):
@@ -20,7 +17,8 @@ class Motor(gpiozero.Device):
         self.value *= -1
 
     def stop(self):
-        self.value = 0
+        self._motor.stop()
+        self._throttle = 0
 
     @property
     def value(self) -> float:
@@ -29,15 +27,11 @@ class Motor(gpiozero.Device):
     @value.setter
     def value(self, value: float):
         self._throttle = value
-        if value > 0:
-            self.phase.off()
-            self.board.set_pwm_duty(self.pwm_chan, value * 100.0)
-        elif value < 0:
-            self.phase.on()
-            self.board.set_pwm_duty(self.pwm_chan, 100 - value * 100.0)
+        if value != 0:
+            self._motor.enable()
+            self._motor.speed(value)
         else:
-            self.board.set_pwm_duty(self.pwm_chan, 0)
-            self.phase.off()
+            self._motor.stop()
 
     @property
     def is_active(self) -> bool:
@@ -46,13 +40,10 @@ class Motor(gpiozero.Device):
 
 class Robot:
     def __init__(self) -> None:
-        self.board = DFRobot_RaspberryPi_Expansion_Board.DFRobot_Expansion_Board_IIC(1, 0x10)
-        self.board.begin()
-        self.board.set_pwm_enable()
-        self.board.set_pwm_frequency(1000)
-        self.left_motor = Motor(self.board, 0, 0)
-        self.right_motor = Motor(self.board, 1, 1)
-    
+        self.board = inventorhatmini.InventorHATMini()
+        self.left_motor = Motor(self.board.motors[1])
+        self.right_motor = Motor(self.board.motors[0])
+
     def forward(self, speed=1, curve_left=0, curve_right=0):
         self.left_motor.forward(speed - curve_left)
         self.right_motor.forward(speed - curve_right)
