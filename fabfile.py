@@ -1,3 +1,4 @@
+from asyncio import tasks
 from fabric import task
 from invoke import Collection
 import patchwork.transfers
@@ -41,6 +42,18 @@ def power_off(c):
 @task
 def put_code(c):
     patchwork.transfers.rsync(c, "src/", "src")
+
+@task
+def setup_rabbitmq(c):
+    """Rabbit MQ can be used to create a service bus"""
+    c.sudo("apt-get install -y rabbitmq-server")
+    c.sudo("rabbitmqctl add_user pi raspberry")
+    # setup permissions
+    c.sudo("rabbitmqctl set_permissions -p / pi \".*\" \".*\" \".*\"")
+    # enable management
+    c.sudo("rabbitmq-plugins enable rabbitmq_management")
+    c.sudo("rabbitmqctl set_user_tags pi administrator")
+
 
 # Add the gravity installer to the root collection
 ns = Collection()
