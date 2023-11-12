@@ -1,4 +1,4 @@
-from asyncio import tasks
+import byteio
 from fabric import task
 from invoke import Collection
 import patchwork.transfers
@@ -44,15 +44,13 @@ def put_code(c):
     patchwork.transfers.rsync(c, "src/", "src")
 
 @task
-def setup_rabbitmq(c):
-    """Rabbit MQ can be used to create a service bus"""
-    c.sudo("apt-get install -y rabbitmq-server")
-    c.sudo("rabbitmqctl add_user pi raspberry")
-    # setup permissions
-    c.sudo("rabbitmqctl set_permissions -p / pi \".*\" \".*\" \".*\"")
-    # enable management
-    c.sudo("rabbitmq-plugins enable rabbitmq_management")
-    c.sudo("rabbitmqctl set_user_tags pi administrator")
+def setup_mqtt(c):
+    """MQTT can be used to create a service bus"""
+    c.sudo("apt-get install -y mosquitto mosquitto-clients")
+    c.sudo("mosquitto_passwd -c /etc/mosquitto/passwd pi",  in_stream=byteio.ByteIO("pi2024yellow"))
+    # Mostquito file
+    mosquitto_file = "/etc/mosquitto/mosquitto.conf"
+    
 
 
 # Add the gravity installer to the root collection
