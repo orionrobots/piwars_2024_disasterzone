@@ -1,4 +1,4 @@
-# to run: uvicorn main:app --reload --host 0.0.0.0
+# to run: uvicorn api:app --reload --host 0.0.0.0
 
 from fastapi import FastAPI
 from robot import Robot
