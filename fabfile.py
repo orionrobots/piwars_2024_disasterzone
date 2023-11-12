@@ -43,6 +43,10 @@ def power_off(c):
 def put_code(c):
     patchwork.transfers.rsync(c, "src/", "src")
 
+@task
+def deploy_web_control(c):
+    c.sudo("pip3 install --upgrade fastapi uvicorn")
+
 # Add the gravity installer to the root collection
 ns = Collection()
 ns.add_collection(dfrobot_gravity)
@@ -59,3 +63,4 @@ ns.add_task(deploy_system, "deploy_system")
 ns.add_task(show_i2c_devices, "show_i2c_devices")
 ns.add_task(power_off, "power_off")
 ns.add_task(put_code, "put_code")
+ns.add_task(deploy_web_control, "deploy_web_control")
