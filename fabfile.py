@@ -9,6 +9,7 @@ from adafruit_crickit.install_tasks import adafruit_crickit
 from adafruit_stepper_motor_hat.install_tasks import adafruit_stepper_motor_hat
 from redrobotics_redboard.install_tasks import redrobotics_redboard
 from pimoroni_inventor_hat_mini.install_tasks import pimoroni_inventor_hat_mini
+from pimoroni_explorer_hat_pro.install_tasks import pimoroni_explorer_hat_pro
 
 @task
 def real_i2c(c):
@@ -51,7 +52,9 @@ def setup_mqtt(c):
     # Mostquito file
     mosquitto_file = "/etc/mosquitto/mosquitto.conf"
     
-
+@task
+def deploy_web_control(c):
+    c.sudo("pip3 install --upgrade fastapi uvicorn")
 
 # Add the gravity installer to the root collection
 ns = Collection()
@@ -60,6 +63,8 @@ ns.add_collection(adafruit_crickit)
 ns.add_collection(adafruit_stepper_motor_hat)
 ns.add_collection(redrobotics_redboard)
 ns.add_collection(pimoroni_inventor_hat_mini)
+ns.add_collection(pimoroni_explorer_hat_pro)
+
 # Add all the tasks above to the root collection
 ns.add_task(real_i2c, "real_i2c")
 ns.add_task(software_i2c, "software_i2c")
@@ -67,3 +72,5 @@ ns.add_task(deploy_system, "deploy_system")
 ns.add_task(show_i2c_devices, "show_i2c_devices")
 ns.add_task(power_off, "power_off")
 ns.add_task(put_code, "put_code")
+ns.add_task(deploy_web_control, "deploy_web_control")
+ns.add_task(setup_mqtt, "setup_mqtt")
