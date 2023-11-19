@@ -1,4 +1,4 @@
-import io
+import functools
 
 from fabric import task, Connection
 from invoke import Collection
@@ -15,6 +15,10 @@ from pimoroni_explorer_hat_pro.install_tasks import pimoroni_explorer_hat_pro
 from src.robot_settings import Settings
 settings = Settings()
 host = Connection(settings.pi_hostname, user=settings.pi_username)
+host.sudo = functools.partial(host.sudo, echo=True)
+
+def sudo_pip_install(command):
+    host.sudo(f"pip3 install --root-user-action ignore --break-system-packages {command}")
 
 @task
 def real_i2c(c):
@@ -48,22 +52,39 @@ def power_off(c):
 @task
 def put_code(c):
     patchwork.transfers.rsync(host, "src/", "src")
+    host.put("drive_motors_service/motors_service.py", "src/motors_service.py")
+
+@task
+def put_env_config(c):
+    host.put(".env", "src/.env")
 
 @task
 def deploy_pydantic(c):
-    host.sudo("pip3 install --upgrade pydantic pydantic-settings")
+    sudo_pip_install("--upgrade pydantic pydantic-settings")
 
-@task(pre=[deploy_pydantic])
+@task(pre=[deploy_pydantic, put_env_config])
 def deploy_mqtt(c):
     """MQTT can be used to create a service bus"""
     host.sudo("apt-get install -y mosquitto mosquitto-clients")
-    host.sudo(f"mosquitto_passwd -c /etc/mosquitto/passwd {settings.mqtt_username}", 
-           in_stream=io.StringIO(settings.mqtt_password))
-    host.sudo("pip install paho-mqtt")
+    print("Setting password. No echo")
+    file_lines = [
+        "listener 1883",
+        "protocol mqtt",
+        "# Websockets",
+        "listener 9001",
+        "protocol websockets",
+    ]
+    host.sudo("rm /etc/mosquitto/conf.d/websockets.conf")
+    for line in file_lines:
+        host.sudo(f"echo {line} | sudo tee -a /etc/mosquitto/conf.d/websockets.conf > /dev/null")
+
+    host.sudo(f"mosquitto_passwd -c -b /etc/mosquitto/passwd {settings.mqtt_username} {settings.mqtt_password}", echo=False)
+    sudo_pip_install("paho-mqtt")
+    host.sudo("systemctl restart mosquitto")
 
 @task
 def deploy_web_control(c):
-    host.sudo("pip3 install --upgrade fastapi uvicorn")
+    sudo_pip_install("--upgrade fastapi uvicorn")
 
 # Add the gravity installer to the root collection
 ns = Collection()
@@ -87,3 +108,4 @@ ns.add_task(power_off, "power_off")
 ns.add_task(put_code, "put_code")
 ns.add_task(deploy_web_control, "deploy_web_control")
 ns.add_task(deploy_mqtt, "deploy_mqtt")
+ns.add_task(put_env_config, "put_env_config")
