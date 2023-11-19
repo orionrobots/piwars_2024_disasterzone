@@ -9,6 +9,8 @@ readme = "README.md"
 python = "^3.9"
 fabric = "^3.2.2"
 patchwork = {git = "https://github.com/LecrisUT/patchwork.git", rev = "fabric3"}
+pydantic = "^2.5.1"
+pydantic-settings = "^2.1.0"
 
 
 [build-system]
