@@ -12,7 +12,7 @@ from redrobotics_redboard.install_tasks import redrobotics_redboard
 from pimoroni_inventor_hat_mini.install_tasks import pimoroni_inventor_hat_mini
 from pimoroni_explorer_hat_pro.install_tasks import pimoroni_explorer_hat_pro
 
-from src.robot_settings import Settings
+from robot.robot_settings import Settings
 settings = Settings()
 host = Connection(settings.pi_hostname, user=settings.pi_username)
 host.sudo = functools.partial(host.sudo, echo=True)
@@ -51,12 +51,12 @@ def power_off(c):
 
 @task
 def put_code(c):
-    patchwork.transfers.rsync(host, "src/", "src")
-    host.put("drive_motors_service/motors_service.py", "src/motors_service.py")
+    patchwork.transfers.rsync(host, "robot/", "robot")
+    host.put("drive_motors_service/motors_service.py", "robot/motors_service.py")
 
 @task
 def put_env_config(c):
-    host.put(".env", "src/.env")
+    host.put(".env", ".env")
 
 @task
 def deploy_pydantic(c):
