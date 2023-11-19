@@ -5,14 +5,9 @@ from invoke import Collection
 host: Connection = None
 
 @task
-def setup_pimoroni_inventor_hat_mini(c):
-    # maybe need RPI.GPIO
-    c.sudo("pip3 install smbus2 inventorhatmini")
-
-@task
 def install(c):
     # run the setup task above
-    setup_pimoroni_inventor_hat_mini(host)
+    host.sudo("pip3 install smbus2 inventorhatmini")
     host.put("pimoroni_inventor_hat_mini/robot.py", "src/robot.py")
 
 pimoroni_inventor_hat_mini = Collection("pimoroni_inventor_hat_mini")

@@ -5,15 +5,10 @@ from invoke import Collection
 host: Connection = None
 
 @task
-def setup_adafruit_crickit(c):
-    # maybe need RPI.GPIO
-    c.sudo("pip3 install Adafruit-Blinka")
-    c.run("pip3 install adafruit-circuitpython-crickit")
-
-@task
 def install(c):
     # run the setup task above
-    setup_adafruit_crickit(host)
+    host.sudo("pip3 install Adafruit-Blinka")
+    host.run("pip3 install adafruit-circuitpython-crickit")
     host.put("adafruit_crickit/robot.py", "src/robot.py")
     host.put("adafruit_crickit/test_crickit_motors.py")
 
