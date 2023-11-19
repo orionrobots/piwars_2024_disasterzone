@@ -52,7 +52,6 @@ def power_off(c):
 @task
 def put_code(c):
     patchwork.transfers.rsync(host, "robot/", "robot")
-    host.put("drive_motors_service/motors_service.py", "robot/motors_service.py")
 
 @task
 def put_env_config(c):
@@ -67,16 +66,20 @@ def deploy_mqtt(c):
     """MQTT can be used to create a service bus"""
     host.sudo("apt-get install -y mosquitto mosquitto-clients")
     print("Setting password. No echo")
+    # Configure mosquitto
     file_lines = [
         "listener 1883",
         "protocol mqtt",
         "# Websockets",
         "listener 9001",
         "protocol websockets",
+        "allow_anonymous false",
+        "password_file /etc/mosquitto/passwd"
     ]
-    host.sudo("rm /etc/mosquitto/conf.d/websockets.conf")
+    host.sudo("rm /etc/mosquitto/conf.d/robot.conf", warn=True)
+
     for line in file_lines:
-        host.sudo(f"echo {line} | sudo tee -a /etc/mosquitto/conf.d/websockets.conf > /dev/null")
+        host.sudo(f"echo {line} | sudo tee -a /etc/mosquitto/conf.d/robot.conf > /dev/null")
 
     host.sudo(f"mosquitto_passwd -c -b /etc/mosquitto/passwd {settings.mqtt_username} {settings.mqtt_password}", echo=False)
     sudo_pip_install("paho-mqtt")
