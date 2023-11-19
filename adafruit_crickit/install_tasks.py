@@ -1,6 +1,8 @@
 # Install tasks for fabric
-from fabric import task
+from fabric import task, Connection
 from invoke import Collection
+
+host: Connection = None
 
 @task
 def setup_adafruit_crickit(c):
@@ -11,9 +13,9 @@ def setup_adafruit_crickit(c):
 @task
 def install(c):
     # run the setup task above
-    setup_adafruit_crickit(c)
-    c.put("adafruit_crickit/robot.py", "src/robot.py")
-    c.put("adafruit_crickit/test_crickit_motors.py")
+    setup_adafruit_crickit(host)
+    host.put("adafruit_crickit/robot.py", "src/robot.py")
+    host.put("adafruit_crickit/test_crickit_motors.py")
 
 adafruit_crickit = Collection("adafruit_crickit")
 adafruit_crickit.add_task(install, "install")

@@ -1,5 +1,6 @@
-import byteio
-from fabric import task
+import io
+
+from fabric import task, Connection
 from invoke import Collection
 import patchwork.transfers
 import patchwork.files
@@ -11,59 +12,71 @@ from redrobotics_redboard.install_tasks import redrobotics_redboard
 from pimoroni_inventor_hat_mini.install_tasks import pimoroni_inventor_hat_mini
 from pimoroni_explorer_hat_pro.install_tasks import pimoroni_explorer_hat_pro
 
+from src.robot_settings import Settings
+settings = Settings()
+host = Connection(settings.pi_hostname, user=settings.pi_username)
+
 @task
 def real_i2c(c):
-    c.sudo("raspi-config nonint do_i2c 0") # 0 enabled interface
+    host.sudo("raspi-config nonint do_i2c 0") # 0 enabled interface
 
 @task
 def software_i2c(c):
     """This is needed for clock stretching, eg the bno055"""
     # See - https://gps-pie.com/pi_i2c_config.htm
     # Let's make clock stretching work
-    c.sudo("raspi-config nonint do_i2c 1") # 1 disables interface
+    host.sudo("raspi-config nonint do_i2c 1") # 1 disables interface
     overlay_line = "dtoverlay=i2c-gpio,bus=1,i2c_gpio_sda=02,i2c_gpio_scl=03"
     if not patchwork.files.contains(c,"/boot/config.txt", overlay_line):
-        c.sudo(f"echo {overlay_line} | sudo tee -a /boot/config.txt > /dev/null")
+        host.sudo(f"echo {overlay_line} | sudo tee -a /boot/config.txt > /dev/null")
 
 @task
 def deploy_system(c):
-    c.sudo("apt-get update")
-    c.sudo("apt-get upgrade -y")
-    c.sudo("apt-get install -y python3-pip python3-smbus i2c-tools git python3-gpiozero")        
-    c.sudo("reboot")
+    host.sudo("apt-get update")
+    host.sudo("apt-get upgrade -y")
+    host.sudo("apt-get install -y python3-pip python3-smbus i2c-tools git python3-gpiozero")
+    host.sudo("reboot")
 
 @task
 def show_i2c_devices(c):
-    c.run("/usr/sbin/i2cdetect -y 1")
+    host.run("/usr/sbin/i2cdetect -y 1")
 
 @task
 def power_off(c):
-    c.sudo("poweroff")
+    host.sudo("poweroff")
 
 @task
 def put_code(c):
-    patchwork.transfers.rsync(c, "src/", "src")
+    patchwork.transfers.rsync(host, "src/", "src")
 
 @task
-def setup_mqtt(c):
+def deploy_pydantic(c):
+    host.sudo("pip3 install --upgrade pydantic pydantic-settings")
+
+@task(pre=[deploy_pydantic])
+def deploy_mqtt(c):
     """MQTT can be used to create a service bus"""
-    c.sudo("apt-get install -y mosquitto mosquitto-clients")
-    c.sudo("mosquitto_passwd -c /etc/mosquitto/passwd pi",  in_stream=byteio.ByteIO("pi2024yellow"))
-    # Mostquito file
-    mosquitto_file = "/etc/mosquitto/mosquitto.conf"
-    
+    host.sudo("apt-get install -y mosquitto mosquitto-clients")
+    host.sudo(f"mosquitto_passwd -c /etc/mosquitto/passwd {settings.mqtt_username}", 
+           in_stream=io.StringIO(settings.mqtt_password))
+    host.sudo("pip install paho-mqtt")
+
 @task
 def deploy_web_control(c):
-    c.sudo("pip3 install --upgrade fastapi uvicorn")
+    host.sudo("pip3 install --upgrade fastapi uvicorn")
 
 # Add the gravity installer to the root collection
 ns = Collection()
-ns.add_collection(dfrobot_gravity)
-ns.add_collection(adafruit_crickit)
-ns.add_collection(adafruit_stepper_motor_hat)
-ns.add_collection(redrobotics_redboard)
-ns.add_collection(pimoroni_inventor_hat_mini)
-ns.add_collection(pimoroni_explorer_hat_pro)
+def add_module(module):
+    module.host = host
+    ns.add_collection(module)
+
+add_module(dfrobot_gravity)
+add_module(adafruit_crickit)
+add_module(adafruit_stepper_motor_hat)
+add_module(redrobotics_redboard)
+add_module(pimoroni_inventor_hat_mini)
+add_module(pimoroni_explorer_hat_pro)
 
 # Add all the tasks above to the root collection
 ns.add_task(real_i2c, "real_i2c")
@@ -73,4 +86,4 @@ ns.add_task(show_i2c_devices, "show_i2c_devices")
 ns.add_task(power_off, "power_off")
 ns.add_task(put_code, "put_code")
 ns.add_task(deploy_web_control, "deploy_web_control")
-ns.add_task(setup_mqtt, "setup_mqtt")
+ns.add_task(deploy_mqtt, "deploy_mqtt")

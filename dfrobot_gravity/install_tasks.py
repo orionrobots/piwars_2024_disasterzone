@@ -1,7 +1,9 @@
 # Install tasks for fabric
-from fabric import task
+from fabric import task, Connection
 from invoke import Collection
 import patchwork.files
+
+host: Connection = None
 
 @task
 def setup_dfrobot_library(c):
@@ -15,9 +17,9 @@ def setup_dfrobot_library(c):
 @task
 def install(c):
     # run the setup task above
-    setup_dfrobot_library(c)
+    setup_dfrobot_library(host)
     print("Updating code on robot")
-    c.put("dfrobot_gravity/robot.py", "src/robot.py")
+    host.put("dfrobot_gravity/robot.py", "src/robot.py")
 
 dfrobot_gravity = Collection("dfrobot_gravity")
 dfrobot_gravity.add_task(install, "install")

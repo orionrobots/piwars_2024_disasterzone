@@ -1,6 +1,8 @@
 # Install tasks for fabric
-from fabric import task
+from fabric import task, Connection
 from invoke import Collection
+
+host: Connection = None
 
 @task
 def setup_pimoroni_inventor_hat_mini(c):
@@ -10,8 +12,8 @@ def setup_pimoroni_inventor_hat_mini(c):
 @task
 def install(c):
     # run the setup task above
-    setup_pimoroni_inventor_hat_mini(c)
-    c.put("pimoroni_inventor_hat_mini/robot.py", "src/robot.py")
+    setup_pimoroni_inventor_hat_mini(host)
+    host.put("pimoroni_inventor_hat_mini/robot.py", "src/robot.py")
 
 pimoroni_inventor_hat_mini = Collection("pimoroni_inventor_hat_mini")
 pimoroni_inventor_hat_mini.add_task(install, "install")

@@ -1,6 +1,8 @@
 # Install tasks for fabric
-from fabric import task
+from fabric import task, Connection
 from invoke import Collection
+
+host: Connection = None
 
 @task
 def setup_pimoroni_explorer_hat_pro(c):
@@ -10,8 +12,8 @@ def setup_pimoroni_explorer_hat_pro(c):
 @task
 def install(c):
     # run the setup task above
-    setup_pimoroni_explorer_hat_pro(c)
-    c.put("pimoroni_explorer_hat_pro/robot.py", "src/robot.py")
+    setup_pimoroni_explorer_hat_pro(host)
+    host.put("pimoroni_explorer_hat_pro/robot.py", "src/robot.py")
 
 pimoroni_explorer_hat_pro = Collection("pimoroni_explorer_hat_pro")
 pimoroni_explorer_hat_pro.add_task(install, "install")

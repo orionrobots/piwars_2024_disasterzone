@@ -1,6 +1,8 @@
 # Install tasks for fabric
-from fabric import task
+from fabric import task, Connection
 from invoke import Collection
+
+host: Connection = None
 
 @task
 def setup_adafruit_stepper_motor_hat(c):
@@ -12,8 +14,8 @@ def setup_adafruit_stepper_motor_hat(c):
 @task
 def install(c):
     # run the setup task above
-    setup_adafruit_stepper_motor_hat(c)
-    c.put("adafruit_stepper_motor_hat/robot.py", "src/robot.py")
+    setup_adafruit_stepper_motor_hat(host)
+    host.put("adafruit_stepper_motor_hat/robot.py", "src/robot.py")
 
 adafruit_stepper_motor_hat = Collection("adafruit_stepper_motor_hat")
 adafruit_stepper_motor_hat.add_task(install, "install")
