@@ -3,8 +3,9 @@ import functools
 from pyinfra.operations import \
     apt, pip, files, systemd, server
 from pyinfra import host
+from helpers import system_pip
 
-system_pip = functools.partial(pip.packages, extra_install_args="--root-user-action ignore --break-system-packages")
+
 needs_reboot = False
 
 # install python tools, git, gpiozero, smbus
@@ -18,10 +19,8 @@ base_packages = apt.packages(
 needs_reboot = needs_reboot or base_packages.changed
 
 # Check which i2c we'll support
-if host.data.get("i2c_type") == "real":
-    # enable real i2c
-    server.shell("raspi-config nonint do_i2c 0") # Option 0 - enabled
-else:
+server.shell("raspi-config nonint do_i2c 0") # Option 0 - enabled
+if host.data.get("i2c_type") != "real":
     server.shell("raspi-config nonint do_i2c 1") # Option 1 - disabled
     # Let's make clock stretching work
     overlay_line = "dtoverlay=i2c-gpio,bus=1,i2c_gpio_sda=02,i2c_gpio_scl=03"

@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     mqtt_host: str = "localhost"
     mqtt_username: str = "your_mqtt"
     mqtt_password: str = "your_mqtt_pass"
+    board_name: str = "Main breakout board name"
 
 
 # TODO: Add motor controller choice here
