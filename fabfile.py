@@ -5,12 +5,12 @@ from invoke import Collection
 import patchwork.transfers
 import patchwork.files
 
-from dfrobot_gravity.install_tasks import dfrobot_gravity
-from adafruit_crickit.install_tasks import adafruit_crickit
-from adafruit_stepper_motor_hat.install_tasks import adafruit_stepper_motor_hat
-from redrobotics_redboard.install_tasks import redrobotics_redboard
-from pimoroni_inventor_hat_mini.install_tasks import pimoroni_inventor_hat_mini
-from pimoroni_explorer_hat_pro.install_tasks import pimoroni_explorer_hat_pro
+from robot.services.dfrobot_gravity.install_tasks import dfrobot_gravity
+from robot.services.adafruit_crickit.install_tasks import adafruit_crickit
+from robot.services.adafruit_stepper_motor_hat.install_tasks import adafruit_stepper_motor_hat
+from robot.services.redrobotics_redboard.install_tasks import redrobotics_redboard
+from robot.services.pimoroni_inventor_hat_mini.install_tasks import pimoroni_inventor_hat_mini
+from robot.services.pimoroni_explorer_hat_pro.install_tasks import pimoroni_explorer_hat_pro
 
 from robot.robot_settings import Settings
 settings = Settings()
