@@ -30,7 +30,7 @@ else:
         path="/boot/config.txt",
         line=overlay_line,
         present=True,
-        sudo=True,
+        _sudo=True,
     )
     needs_reboot = needs_reboot or updated_overlay.changed
 # Reboot if we need before continuing
@@ -48,13 +48,15 @@ system_pip(
 )
 
 # Deploy mqtt
-mosquitto_packages = apt.packages("Install mosquitto", packages=[
-    "mosquitto", 
-    "mosquitto-clients"],
+mosquitto_packages = apt.packages(
+    name="Install mosquitto", 
+    packages=[
+        "mosquitto", 
+        "mosquitto-clients"],
     present=True, _sudo=True)
 mosquitto_files = files.put(
     name="Configure mosquitto",
-    src="robot/mosquitto.conf",
+    src="deployment/robot_mosquitto.conf",
     dest="/etc/mosquitto/conf.d/robot.conf",
     _sudo=True,
 )
@@ -72,7 +74,7 @@ if mosquitto_packages or mosquitto_files:
         _sudo=True,
     )
 
-system_pip("Install paho-mqtt", packages=["paho-mqtt"], present=True)
+system_pip(name="Install paho-mqtt", packages=["paho-mqtt"], present=True)
 
 ## Web control
-system_pip("Install fastapi", packages=["fastapi", "uvicorn"], present=True)
+system_pip(name="Install web-control dependancies", packages=["fastapi", "uvicorn"], present=True)
