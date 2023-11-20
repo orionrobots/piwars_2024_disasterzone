@@ -12,42 +12,6 @@ We need to deploy a few things:
 
 Ideally, this would be idempotent. That is - it can be run multiple times without issues, like constantly rebooting the Pi or services unnecessarily.
 
-## Idempotent tools
-
-We've used fabric to keep stuff compatible with all OS's, but we need to know if things have changed.
-
-Tools to consider:
-- pip
-- raspi-config
-- file updates
-    - lines in file
-    - files synced (the robot folder)
-    - files synced - config and env
-- apt
-- Overrides to force upgrades if things are already installed
-- mosquitto password
-- systemctl services started
-- git clones
-
-Strategies:
-1. Switch to ansible - this is the elephant in the room, however, it means windows user MUST go to WSL2 or docker. Trying to avoid this.
-2. Create wrapper functions for the tasks.
-    - Done right, this could also improve our "host" situation.
-    - We could also use this to create a "dry run" mode.
-    - This would include idempotency checks
-3. Put idempotency checks on each individual operation
-    - yuck, would be verbose.
-4. Alternatives like chef, saltstack are possible. Both require agents on the Pi I think.
-    - "Salt can run without any agent on the target" - agentless mode.
-    - is salt stack idempotent - yes
-    - can use ssh.
-    - Ok - worth investigating. Might be doable in pure python too.
-        - Can be called from a python API.
-        - Needs "master and minion" - does it need that when used in python?
-        - ZMQ setup? Ummm - so much.
-        - Standalone/masterless minion. https://docs.saltproject.io/en/3001/topics/tutorials/standalone_minion.html
-        - Python api is a client - ahhh. - https://docs.saltproject.io/en/latest/topics/tutorials/quickstart.html
-
 ## Project folder structure
 
 Currently, a bit messy. Let's rejig - with service oriented setup.
