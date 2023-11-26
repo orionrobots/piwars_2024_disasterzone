@@ -1,17 +1,5 @@
-# Install tasks for fabric
-from fabric import task
-from invoke import Collection
+from pyinfra.operations import pip, files
 
-@task
-def setup_pimoroni_explorer_hat_pro(c):
-    # maybe need RPI.GPIO
-    c.sudo("pip3 install --upgrade smbus2 explorerhat")
+pip.packages(name="install packages", packages=["smbus2", "explorerhat"], present=True, _sudo=True)
 
-@task
-def install(c):
-    # run the setup task above
-    setup_pimoroni_explorer_hat_pro(c)
-    c.put("pimoroni_explorer_hat_pro/robot.py", "src/robot.py")
-
-pimoroni_explorer_hat_pro = Collection("pimoroni_explorer_hat_pro")
-pimoroni_explorer_hat_pro.add_task(install, "install")
+files.put(src="src/boards/pimoroni_explorer_hat_pro/robot.py", dest="src/robot.py")
