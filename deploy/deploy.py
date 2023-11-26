@@ -55,14 +55,14 @@ mosquitto_packages = apt.packages(
     present=True, _sudo=True)
 mosquitto_files = files.put(
     name="Configure mosquitto",
-    src="deployment/robot_mosquitto.conf",
+    src="deploy/robot_mosquitto.conf",
     dest="/etc/mosquitto/conf.d/robot.conf",
     _sudo=True,
 )
-if mosquitto_packages:
+if mosquitto_packages.changed:
     # set mosquitto password
-    server.shell("sudo mosquitto_passwd -b /etc/mosquitto/passwd robot robot", _sudo=True)
-if mosquitto_packages or mosquitto_files:
+    server.shell("mosquitto_passwd -b /etc/mosquitto/passwd robot robot", _sudo=True)
+if mosquitto_packages.changed or mosquitto_files.changed:
     # restart mosquitto
     systemd.service(
         name="Restart mosquitto",
