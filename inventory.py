@@ -1,4 +1,4 @@
-from deploy.settings import RobotSettings
+from robot.common.settings import RobotSettings
 
 settings = RobotSettings()
 
