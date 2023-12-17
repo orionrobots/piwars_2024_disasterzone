@@ -8,7 +8,7 @@ username = os.environ["PI_USERNAME"]
 # Create the service unit file
 files.template(
     name="Create explorerhat service",
-    src="robot/services/pimoroni_explorer_hat/service.j2",
+    src="robot/services/pimoroni_explorer_hat_pro/service.j2",
     dest="/etc/systemd/system/explorerhat.service",
     mode="644",
     user="root",
@@ -21,7 +21,6 @@ files.template(
 systemd.service(
     name="Enable explorerhat service",
     service="explorerhat.service",
-    present=True,
     enabled=True,
     restarted=True,
     _sudo=True

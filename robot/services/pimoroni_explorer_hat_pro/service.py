@@ -2,6 +2,7 @@ import explorerhat
 import paho.mqtt.client as mqtt
 from random import randint
 import time
+import json
 
 
 class Motor():
@@ -50,7 +51,8 @@ class ExplorerHatService:
         client.subscribe("motors/#")
     
     def on_message(self, client, userdata, msg):
-        print(msg.topic+" "+str(msg.payload))
+        payload = json.loads(msg.payload)
+        print(msg.topic+" "+str(payload))
         motor_handlers = {
             "motors/forward": self.forward,
             "motors/backward": self.backward,
@@ -61,7 +63,7 @@ class ExplorerHatService:
             "motors/values": self.set_values
         }
         if msg.topic in motor_handlers:
-            motor_handlers[msg.topic](msg.payload)
+            motor_handlers[msg.topic](payload)
         self.last_contact = time.monotonic()
 
     def forward(self, payload: dict):
@@ -92,7 +94,7 @@ class ExplorerHatService:
         self.left_motor.value *= -1
         self.right_motor.value *= -1
     
-    def stop(self, payload: dict):
+    def stop(self, payload: dict = None):
         self.left_motor.stop()
         self.right_motor.stop()
 
