@@ -2,6 +2,7 @@ import inventorhatmini
 import paho.mqtt.client as mqtt
 from random import randint
 import time
+import json
 
 
 class Motor:
@@ -53,6 +54,7 @@ class InventorHatService:
     
     def on_message(self, client, userdata, msg):
         print(msg.topic+" "+str(msg.payload))
+        payload = json.loads(msg.payload)
         # Dispatch by dictionary
         motor_handlers = {
             "motors/forward": self.forward,
@@ -64,7 +66,7 @@ class InventorHatService:
             "motors/values": self.set_values
         }
         if msg.topic in motor_handlers:
-            motor_handlers[msg.topic](msg.payload)
+            motor_handlers[msg.topic](payload)
             self.last_contact = time.monotonic()
 
     def forward(self,  payload: dict):

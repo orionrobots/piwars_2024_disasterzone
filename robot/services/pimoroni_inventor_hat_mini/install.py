@@ -19,7 +19,6 @@ files.template(
 systemd.service(
     name="Enable inventorhatmini service",
     service="inventorhatmini.service",
-    present=True,
     enabled=True,
     restarted=True,
     _sudo=True
