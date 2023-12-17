@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from src.robot import Robot
+from robot.robot import Robot
 from random import randint
 import time
 
