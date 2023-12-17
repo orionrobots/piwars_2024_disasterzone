@@ -1,5 +1,5 @@
 from pyinfra import local, host
 
-board = host.data.get("board")
-board_path = f"robot/boards/{board}/install_tasks.py"
+board_name = host.data.get("board_name")
+board_path = f"robot/boards/{board_name}/install_tasks.py"
 local.include(board_path)
