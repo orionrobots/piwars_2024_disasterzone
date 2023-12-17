@@ -53,7 +53,7 @@ class InventorHatService:
     
     def on_message(self, client, userdata, msg):
         print(msg.topic+" "+str(msg.payload))
-        # Dispatch by disctionary
+        # Dispatch by dictionary
         motor_handlers = {
             "motors/forward": self.forward,
             "motors/backward": self.backward,
@@ -67,7 +67,7 @@ class InventorHatService:
             motor_handlers[msg.topic](msg.payload)
             self.last_contact = time.monotonic()
 
-    def forward(self, payload):
+    def forward(self,  payload: dict):
         speed = payload.get("speed", 1)
         curve_left = payload.get("curve_left", 0)
         curve_right = payload.get("curve_right", 0)
@@ -75,7 +75,7 @@ class InventorHatService:
         self.left_motor.forward(speed - curve_left)
         self.right_motor.forward(speed - curve_right)
 
-    def backward(self, payload):
+    def backward(self,  payload: dict):
         speed = payload.get("speed", 1)
         curve_left = payload.get("curve_left", 0)
         curve_right = payload.get("curve_right", 0)
@@ -83,31 +83,32 @@ class InventorHatService:
         self.left_motor.backward(speed + curve_left)
         self.right_motor.backward(speed + curve_right)
 
-    def left(self, payload):
+    def left(self,  payload: dict):
         speed = payload.get("speed", 1)
         self.left_motor.backward(speed)
         self.right_motor.forward(speed)
     
-    def right(self, payload):
+    def right(self,  payload: dict):
         speed = payload.get("speed", 1)
         self.left_motor.forward(speed)
         self.right_motor.backward(speed)
     
-    def reverse(self, payload=None):
+    def reverse(self,  payload: dict=None):
         self.left_motor.value *= -1
         self.right_motor.value *= -1
     
-    def stop(self, payload=None):
+    def stop(self,  payload: dict=None):
         self.left_motor.stop()
         self.right_motor.stop()
     
 
-    def get_value(self):
+    def get_values(self):
         return (self.left_motor.value, self.right_motor.value)
     
-    def set_values(self, payload):
+    def set_values(self, payload: dict):
         self.left_motor.value = payload["left"]
         self.right_motor.value = payload["right"]
+
 
 service = InventorHatService()
 service_name = "inventorhat"

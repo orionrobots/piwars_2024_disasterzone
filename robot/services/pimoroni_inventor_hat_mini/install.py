@@ -1,8 +1,26 @@
-from pyinfra.operations import pip, files
+from pyinfra.operations import pip, systemd, systemd, files
+import os
 
 pip.packages(name="install packages", packages=["smbus2", "inventorhatmini"], present=True, _sudo=True)
 
-# Install the service
-# Add the service to the systemd services
+# Create the service unit file
+files.template(
+    name="Create inventorhatmini service",
+    src="robot/services/pimoroni_inventor_hat_mini/service.j2",
+    dest="/etc/systemd/system/inventorhatmini.service",
+    mode="644",
+    user="root",
+    group="root",
+    pi_username=os.environ["PI_USERNAME"],
+    _sudo=True
+)
 
-files.put(src="robot/boards/pimoroni_explorer_hat_pro/robot.py", dest="robot/robot.py")
+# Enable the service
+systemd.service(
+    name="Enable inventorhatmini service",
+    service="inventorhatmini.service",
+    present=True,
+    enabled=True,
+    restarted=True,
+    _sudo=True
+)
