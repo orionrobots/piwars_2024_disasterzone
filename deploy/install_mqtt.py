@@ -1,4 +1,8 @@
 from pyinfra.operations import apt, files, systemd, pip, server
+from deploy.settings import RobotSettings
+from deploy.helpers import system_pip
+
+settings = RobotSettings()
 
 mosquitto_packages = apt.packages(
     name="Install mosquitto", 
@@ -16,7 +20,7 @@ mosquitto_files = files.put(
 
 if mosquitto_packages.changed:
     # set mosquitto password
-    server.shell("mosquitto_passwd -c -b /etc/mosquitto/passwd robot robot", _sudo=True)
+    server.shell(f"mosquitto_passwd -c -b /etc/mosquitto/passwd {settings.mqtt_username} {settings.mqtt_password.get_secret_value()}", _sudo=True)
 
 if mosquitto_packages.changed or mosquitto_files.changed:
     # restart mosquitto
@@ -29,4 +33,4 @@ if mosquitto_packages.changed or mosquitto_files.changed:
         _sudo=True,
     )
 
-pip.packages(name="Install paho-mqtt", packages=["paho-mqtt"], present=True, _sudo=True)
+system_pip(name="Install paho-mqtt", packages=["paho-mqtt"], present=True, _sudo=True)
