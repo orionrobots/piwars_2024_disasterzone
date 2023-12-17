@@ -11,7 +11,7 @@ def setup_pimoroni_inventor_hat_mini(c):
 def install(c):
     # run the setup task above
     setup_pimoroni_inventor_hat_mini(c)
-    c.put("pimoroni_inventor_hat_mini/robot.py", "src/robot.py")
+    c.put("pimoroni_inventor_hat_mini/robot.py", "robot/robot.py")
 
 pimoroni_inventor_hat_mini = Collection("pimoroni_inventor_hat_mini")
 pimoroni_inventor_hat_mini.add_task(install, "install")

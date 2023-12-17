@@ -17,7 +17,7 @@ def install(c):
     # run the setup task above
     setup_dfrobot_library(c)
     print("Updating code on robot")
-    c.put("dfrobot_gravity/robot.py", "src/robot.py")
+    c.put("dfrobot_gravity/robot.py", "robot/robot.py")
 
 dfrobot_gravity = Collection("dfrobot_gravity")
 dfrobot_gravity.add_task(install, "install")

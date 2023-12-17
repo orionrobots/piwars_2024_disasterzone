@@ -1,3 +1,3 @@
 from pyinfra.operations import files
 
-files.sync("src", "src")
+files.sync("robot", "robot")

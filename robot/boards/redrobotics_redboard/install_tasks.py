@@ -5,7 +5,7 @@ from invoke import Collection
 @task
 def install(c):
     print("Updating code on robot")
-    c.put("redrobotics_redboard/robot.py", "src/robot.py")
+    c.put("redrobotics_redboard/robot.py", "robot/robot.py")
 
 redrobotics_redboard = Collection("redrobotics_redboard")
 redrobotics_redboard.add_task(install, "install")
