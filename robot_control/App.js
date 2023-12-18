@@ -7,7 +7,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <Text>Control the robot!</Text>
-      <KorolJoystick color="#06b6d4" radius={75} onMove={onJoystickMove} onStop={onJoyStickStop}></KorolJoystick
+      <KorolJoystick color="#06b6d4" radius={75} onMove={onJoystickMove} onStop={onJoyStickStop}></KorolJoystick>
       <StatusBar style="auto" />
     </GestureHandlerRootView>
   );
