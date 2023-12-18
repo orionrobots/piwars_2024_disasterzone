@@ -5,7 +5,9 @@ After=mosquitto.service
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/python3 /home/{{ pi_username }}/robot/services/pimoroni_inventor_hat_mini/service.py
+WorkingDirectory=/home/{{ pi_username }}/
+ExecStart=/usr/bin/python3 -m robot.services.pimoroni_inventor_hat_mini.service
+EnvironmentFile=/etc/robot.env
 
 [Install]
 WantedBy=multi-user.target

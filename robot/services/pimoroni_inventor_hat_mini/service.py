@@ -5,6 +5,12 @@ import time
 import json
 
 
+from robot.common.settings import RobotSettings
+
+
+def limit(value: float, min_value: float, max_value: float) -> float:
+    return min(max(value, min_value), max_value)
+
 class Motor:
     def __init__(self, board_motor :inventorhatmini.Motor):
         self._motor = board_motor
@@ -14,7 +20,7 @@ class Motor:
         self.value = speed
 
     def backward(self, speed: float=1):
-        self.value = -speed
+        self.value = speed
 
     def reverse(self):
         self.value *= -1
@@ -29,17 +35,16 @@ class Motor:
 
     @value.setter
     def value(self, value: float):
-        self._throttle = value
+        self._throttle = limit(value, -1, 1)
         if value != 0:
             self._motor.enable()
-            self._motor.speed(value)
+            self._motor.speed(self._throttle)
         else:
             self._motor.stop()
 
     @property
     def is_active(self) -> bool:
         return self._throttle != 0
-
 
 class InventorHatService:
     last_contact = 0
@@ -71,19 +76,17 @@ class InventorHatService:
 
     def forward(self,  payload: dict):
         speed = payload.get("speed", 1)
-        curve_left = payload.get("curve_left", 0)
-        curve_right = payload.get("curve_right", 0)
+        curve = payload.get("curve", 0)
 
-        self.left_motor.forward(speed - curve_left)
-        self.right_motor.forward(speed - curve_right)
+        self.left_motor.forward(speed - curve)
+        self.right_motor.forward(speed + curve)
 
     def backward(self,  payload: dict):
         speed = payload.get("speed", 1)
-        curve_left = payload.get("curve_left", 0)
-        curve_right = payload.get("curve_right", 0)
+        curve = payload.get("curve", 0)
 
-        self.left_motor.backward(speed + curve_left)
-        self.right_motor.backward(speed + curve_right)
+        self.left_motor.backward(speed - curve)
+        self.right_motor.backward(speed + curve)
 
     def left(self,  payload: dict):
         speed = payload.get("speed", 1)
@@ -112,13 +115,13 @@ class InventorHatService:
         self.right_motor.value = payload["right"]
 
 
+settings = RobotSettings()
 service = InventorHatService()
 service_name = "inventorhat"
-username, password = "robot", "robot"
 host, port = "localhost", 9001
 client = mqtt.Client(client_id=f"{service_name}_{randint(0, 1000)}", transport="websockets")
 
-client.username_pw_set(username, password)
+client.username_pw_set(settings.mqtt_username, settings.mqtt_password.get_secret_value())
 
 print("Connecting")
 client.on_connect = service.on_connect
