@@ -33,4 +33,4 @@ if mosquitto_packages.changed or mosquitto_files.changed:
         _sudo=True,
     )
 
-system_pip(name="Install paho-mqtt", packages=["paho-mqtt"], present=True, _sudo=True)
+apt.packages(name="Install paho-mqtt", packages=["python3-paho-mqtt"], present=True, _sudo=True)
