@@ -35,15 +35,8 @@ Copy the VPA config example on wpa_supplicant.conf_example to wpa_supplicant.con
 We suggest making a copy of .env_example to .env, with your pi details.
 That way, you can then use `source .env` to have your PI hostname in $HOST. Handy if you sometimes forget!
 
-To list target:
-`fab --list`
+This project uses pyinfra. You can deploy with `pyinfra inventory.py deploy/install_base.py`. The other deploy commands are in the deploy folder.
 
-Run a target remotely:
+## Note on updated joystick
 
-`fab -H $HOST -e <taskname>`
-
-Note the `-e` option will echo the command.
-
-To run arbitrary commands remotely:
-
-`fab -H $HOST -- <command>`
+npm install git+https://github.com/orionrobots/react-native-joystick
