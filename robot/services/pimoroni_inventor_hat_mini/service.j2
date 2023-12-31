@@ -1,0 +1,13 @@
+[Unit]
+Description=Inventor Hat Mini service
+After=mosquitto.service
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/{{ pi_username }}/
+ExecStart=/usr/bin/python3 -m robot.services.pimoroni_inventor_hat_mini.service
+EnvironmentFile=/etc/robot.env
+
+[Install]
+WantedBy=multi-user.target

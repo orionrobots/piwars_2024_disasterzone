@@ -163,10 +163,11 @@ wpa_supplicant.conf
 .gitignore
 localnotes.md
 
+## Expo ignores
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
-robot_control/node_modules/
+node_modules/
 
 # Expo
 .expo/

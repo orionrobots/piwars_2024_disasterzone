@@ -1,5 +1,5 @@
-from pyinfra.operations import apt, files, systemd, pip, server
-from deploy.settings import RobotSettings
+from pyinfra.operations import apt, files, systemd, server
+from robot.common.settings import RobotSettings
 from deploy.helpers import system_pip
 
 settings = RobotSettings()
