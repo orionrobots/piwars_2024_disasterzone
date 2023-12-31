@@ -3,9 +3,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KorolJoystick } from "korol-joystick";
 
-import Paho from "paho-mqtt"
+import Paho from "paho-mqtt";
 
 export default function App() {
+  
   return (
     <GestureHandlerRootView style={styles.container}>
       <Text>Control the robot!</Text>
@@ -14,7 +15,6 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -80,8 +80,8 @@ const checkConnectionAndSend = (topic, payload) => {
 const onJoystickMove = async (data) => {
   // console.log('Joystick move');
   // console.log(data);
-  let speed = Math.sin(data.angle.radian) * min(1, data.force);
-  let curve = Math.cos(data.angle.radian) * min(1, data.force);
+  let speed = Math.sin(data.angle.radian) * Math.min(1, data.force);
+  let curve = Math.cos(data.angle.radian) * Math.min(1, data.force);
   console.log("speed: " + speed + "\t curve: " + curve);
   checkConnectionAndSend('motors/forward', {speed: speed, curve: curve});
 }
