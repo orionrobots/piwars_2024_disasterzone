@@ -1,7 +1,7 @@
 from pyinfra import local
-from robot.robot_settings import Settings
+from robot.common.settings import Settings
 
 settings = Settings()
 
-board_path = f"robot/services/{settings.board_name}/deploy.py"
+board_path = f"robot/services/{settings.board_name}/install.py"
 local.include(board_path)

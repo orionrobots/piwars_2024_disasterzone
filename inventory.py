@@ -1,6 +1,10 @@
-from robot.robot_settings import Settings
+from robot.common.settings import RobotSettings
 
-settings = Settings()
-robot = [
-    (settings.pi_hostname, {"ssh_user": settings.pi_username, "i2c_type": "software"})
+settings = RobotSettings()
+
+robots = [
+    (settings.pi_hostname, {
+        "ssh_user": settings.pi_username, 
+        "board_name": settings.board_name
+    })
 ]

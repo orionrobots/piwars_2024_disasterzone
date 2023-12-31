@@ -2,15 +2,13 @@
 name = "piwars-2024-disasterzone"
 version = "0.1.0"
 description = ""
-authors = ["Danny Staple <danny@orionrobots.co.uk>"]
+authors = ["Danny Staple <danny@orionrobots.co.uk>", "Emma Seymour"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pydantic = "^2.5.1"
-pydantic-settings = "^2.1.0"
 pyinfra = "^2.8"
-
+pydantic-settings = "^2.1.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,4 +1,3 @@
-# import ssl
 from robot.services.common.base_service import BaseService
 
 service = BaseService("demo")
