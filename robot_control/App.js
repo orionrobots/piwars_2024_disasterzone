@@ -20,7 +20,6 @@ export default function App() {
 const mqttClient = new Paho.Client(
   env.PI_HOSTNAME,
   Number(9001),
-  "./mqtt",
   "robot_control"
 );
 
