@@ -48,7 +48,7 @@ const onJoystickMove = (data) => {
   let speed = Math.sin(data.angle.radian) * Math.min(1, data.force);
   let curve = Math.cos(data.angle.radian) * Math.min(1, data.force);
   console.log("speed: "+speed+"\t curve: "+curve);
-  data = JSON.stringify({speed: speed, curve: curve});
+  data = JSON.stringify({speed: speed, curve: -curve});
   mqttClient.publish("motors/forward", data);
 };
 
