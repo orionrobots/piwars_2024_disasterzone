@@ -52,11 +52,11 @@ class InventorHatService:
         self.board = inventorhatmini.InventorHATMini()
         self.left_motor = Motor(self.board.motors[1])
         self.right_motor = Motor(self.board.motors[0])
-    
+
     def on_connect(self, client, userdata, flags, rc):
         print("Connected with result code "+str(rc))
         client.subscribe("motors/#")
-    
+
     def on_message(self, client, userdata, msg):
         print(msg.topic+" "+str(msg.payload))
         payload = json.loads(msg.payload)
@@ -92,23 +92,23 @@ class InventorHatService:
         speed = payload.get("speed", 1)
         self.left_motor.backward(speed)
         self.right_motor.forward(speed)
-    
+
     def right(self, payload: dict):
         speed = payload.get("speed", 1)
         self.left_motor.forward(speed)
         self.right_motor.backward(speed)
-    
-    def reverse(self, payload: dict=None):
+
+    def reverse(self, payload: dict = None):
         self.left_motor.value *= -1
         self.right_motor.value *= -1
-    
-    def stop(self, payload: dict=None):
+
+    def stop(self, payload: dict = None):
         self.left_motor.stop()
         self.right_motor.stop()
-    
+
     def get_values(self):
         return (self.left_motor.value, self.right_motor.value)
-    
+
     def set_values(self, payload: dict):
         self.left_motor.value = payload["left"]
         self.right_motor.value = payload["right"]
