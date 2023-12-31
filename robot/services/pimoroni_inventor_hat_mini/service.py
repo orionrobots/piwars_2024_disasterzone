@@ -78,15 +78,15 @@ class InventorHatService:
         speed = payload.get("speed", 1)
         curve = payload.get("curve", 0)
 
-        self.left_motor.forward(speed - curve)
-        self.right_motor.forward(speed + curve)
+        self.left_motor.forward(speed + curve)
+        self.right_motor.forward(speed - curve)
 
     def backward(self, payload: dict):
         speed = payload.get("speed", 1)
         curve = payload.get("curve", 0)
 
-        self.left_motor.backward(speed - curve)
-        self.right_motor.backward(speed + curve)
+        self.left_motor.backward(speed + curve)
+        self.right_motor.backward(speed - curve)
 
     def left(self, payload: dict):
         speed = payload.get("speed", 1)
