@@ -1,6 +1,5 @@
 from pyinfra.operations import apt, files, systemd, server
 from robot.common.settings import RobotSettings
-from deploy.helpers import system_pip
 
 settings = RobotSettings()
 
@@ -8,7 +7,8 @@ mosquitto_packages = apt.packages(
     name="Install mosquitto", 
     packages=[
         "mosquitto", 
-        "mosquitto-clients"],
+        "mosquitto-clients",
+        "python3-paho-mqtt"],
     present=True, _sudo=True)
 
 mosquitto_files = files.put(
@@ -32,5 +32,3 @@ if mosquitto_packages.changed or mosquitto_files.changed:
         daemon_reload=True,
         _sudo=True,
     )
-
-system_pip(name="Install paho-mqtt", packages=["paho-mqtt"], present=True, _sudo=True)
