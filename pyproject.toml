@@ -2,7 +2,7 @@
 name = "piwars-2024-disasterzone"
 version = "0.1.0"
 description = ""
-authors = ["Danny Staple <danny@orionrobots.co.uk>"]
+authors = ["Danny Staple <danny@orionrobots.co.uk>", "Emma Seymour"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
