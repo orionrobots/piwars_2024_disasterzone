@@ -201,4 +201,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # custom
-robot_control/settings.js
+robot_control/env.js
