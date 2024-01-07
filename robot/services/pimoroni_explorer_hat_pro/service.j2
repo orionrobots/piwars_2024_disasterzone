@@ -5,7 +5,7 @@ After=mosquitto.service
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/python3 /home/{{pi_username}}/robot/services/pimoroni_explorer_hat_pro/service.py
+ExecStart=/usr/bin/python3 -u /home/{{pi_username}}/robot/services/pimoroni_explorer_hat_pro/service.py
 
 [Install]
 WantedBy=multi-user.target

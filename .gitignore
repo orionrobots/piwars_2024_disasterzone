@@ -199,3 +199,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# custom
+robot_control/env.js

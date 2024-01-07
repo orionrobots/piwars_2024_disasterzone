@@ -18,9 +18,9 @@ mosquitto_files = files.put(
     _sudo=True
 )
 
-if mosquitto_packages.changed:
+# if mosquitto_packages.changed:
     # set mosquitto password
-    server.shell(f"mosquitto_passwd -c -b /etc/mosquitto/passwd {settings.mqtt_username} {settings.mqtt_password.get_secret_value()}", _sudo=True)
+server.shell(f"mosquitto_passwd -c -b /etc/mosquitto/passwd {settings.mqtt_username} {settings.mqtt_password.get_secret_value()}", _sudo=True)
 
 if mosquitto_packages.changed or mosquitto_files.changed:
     # restart mosquitto
