@@ -29,9 +29,9 @@ class Motor():
 
     @value.setter
     def value(self, value: float):
-        self._throttle = value
+        self._throttle = max(-1, min(1, value))
         if value != 0:
-            self._motor.speed(value*100)
+            self._motor.speed(self._throttle*100)
         else:
             self._motor.stop()
 
@@ -68,17 +68,15 @@ class ExplorerHatService:
 
     def forward(self, payload: dict):
         speed = payload.get("speed", 1)
-        curve_left = payload.get("curve_left", 0)
-        curve_right = payload.get("curve_right", 0)
-        self.left_motor.forward(speed - curve_left)
-        self.right_motor.forward(speed - curve_right)
+        curve = payload.get("curve", 0)
+        self.left_motor.forward(speed - curve)
+        self.right_motor.forward(speed + curve)
 
     def backward(self, payload: dict):
         speed = payload.get("speed", 1)
-        curve_left = payload.get("curve_left", 0)
-        curve_right = payload.get("curve_right", 0)
-        self.left_motor.backward(speed + curve_left)
-        self.right_motor.backward(speed + curve_right)
+        curve = payload.get("curve", 0)
+        self.left_motor.backward(speed + curve)
+        self.right_motor.backward(speed - curve)
 
     def left(self, payload: dict):
         speed = payload.get("speed", 1)

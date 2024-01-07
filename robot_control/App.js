@@ -2,7 +2,7 @@ import Paho from "paho-mqtt";
 import { StatusBar } from 'expo-status-bar';
 import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { KorolJoystick } from "korol-joystick";
+import { ReactNativeJoystick } from "@korsolutions/react-native-joystick";
 import { styles } from "./styles";
 import * as env from "./env";
 
@@ -11,7 +11,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <Text>Control the robot!</Text>
-      <KorolJoystick color="#06b6d4" radius={75} onMove={onJoystickMove} onStop={onJoyStickStop}></KorolJoystick>
+      <ReactNativeJoystick color="#06b6d4" radius={75} onMove={onJoystickMove} onStop={onJoyStickStop}/>
       <StatusBar style="auto" />
     </GestureHandlerRootView>
   );
