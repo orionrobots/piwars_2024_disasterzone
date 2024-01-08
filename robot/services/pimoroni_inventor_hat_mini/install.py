@@ -19,12 +19,15 @@ results = [
     # Create the service unit file
     files.template(
         name="Create inventorhatmini service",
-        src="robot/services/pimoroni_inventor_hat_mini/service.j2",
+        src="deploy/service_template.j2",
         dest="/etc/systemd/system/inventorhatmini.service",
         mode="644",
         user="root",
         group="root",
         pi_username=settings.pi_username,
+        restart="always",
+        service_module="robot.services.pimoroni_inventor_hat_mini.service",
+        service_description="Inventor Hat Mini service",
         _sudo=True
     )
 ]
