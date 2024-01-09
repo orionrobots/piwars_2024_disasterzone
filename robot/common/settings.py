@@ -7,6 +7,7 @@ class RobotSettings(BaseSettings):
     mqtt_username: str
     mqtt_password: SecretStr
     board_name: str
+    mqtt_port: int = 9001
 
     class Config:
         env_file = ".env"

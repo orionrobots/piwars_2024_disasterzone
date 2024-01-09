@@ -1,10 +1,6 @@
 import inventorhatmini
-import paho.mqtt.client as mqtt
-from random import randint
-import time
-import json
 
-
+from robot.common.service_base import ServiceBase
 from robot.common.settings import RobotSettings
 
 
@@ -46,33 +42,28 @@ class Motor:
     def is_active(self) -> bool:
         return self._throttle != 0
 
-class InventorHatService:
-    last_contact = 0
-    def __init__(self) -> None:
+
+class InventorHatService(ServiceBase):
+    service_name = "inventorhat"
+    def __init__(self, settings: RobotSettings) -> None:
+        super().__init__(settings)
         self.board = inventorhatmini.InventorHATMini()
         self.left_motor = Motor(self.board.motors[1])
         self.right_motor = Motor(self.board.motors[0])
 
     def on_connect(self, client, userdata, flags, rc):
-        print("Connected with result code "+str(rc))
+        super().on_connect(client, userdata, flags, rc)
+        print("Subscribing")
         client.subscribe("motors/#")
-
-    def on_message(self, client, userdata, msg):
-        print(msg.topic+" "+str(msg.payload))
-        payload = json.loads(msg.payload)
-        # Dispatch by dictionary
-        motor_handlers = {
-            "motors/forward": self.forward,
-            "motors/backward": self.backward,
-            "motors/left": self.left,
-            "motors/right": self.right,
-            "motors/stop": self.stop,
-            "motors/reverse": self.reverse,
-            "motors/values": self.set_values
-        }
-        if msg.topic in motor_handlers:
-            motor_handlers[msg.topic](payload)
-            self.last_contact = time.monotonic()
+        self.message_callback_add("motors/forward", self.forward)
+        self.message_callback_add("motors/backward", self.backward)
+        self.message_callback_add("motors/left", self.left)
+        self.message_callback_add("motors/right", self.right)
+        self.message_callback_add("motors/stop", self.stop)
+        self.message_callback_add("motors/reverse", self.reverse)
+        self.message_callback_add("motors/values", self.set_values)
+        self.client.message_callback_add("motors/#", self.print_message)
+        print("Callbacks ready")
 
     def forward(self, payload: dict):
         speed = payload.get("speed", 1)
@@ -113,21 +104,9 @@ class InventorHatService:
         self.left_motor.value = payload["left"]
         self.right_motor.value = payload["right"]
 
-
+print("Starting service")
 settings = RobotSettings()
-service = InventorHatService()
-service_name = "inventorhat"
-host, port = "localhost", 9001
-client = mqtt.Client(client_id=f"{service_name}_{randint(0, 1000)}", transport="websockets")
-
-client.username_pw_set(settings.mqtt_username, settings.mqtt_password.get_secret_value())
-
-print("Connecting")
-client.on_connect = service.on_connect
-client.on_message = service.on_message
-client.connect(host, port)
-
-while True:
-    client.loop()
-    if time.monotonic() > service.last_contact + 1:
-        service.stop()
+service = InventorHatService(settings)
+service.connect()
+print("Looping")
+service.loop_forever()
