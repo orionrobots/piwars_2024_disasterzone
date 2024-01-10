@@ -6,7 +6,7 @@ Press "Boot/User" to exit the program.
 from pimoroni_yukon import Yukon
 
 # Constants
-SLEEP = 0.25    # The time to sleep between each toggle
+SLEEP = 0.10    # The time to sleep between each toggle
 
 # Variables
 yukon = Yukon()     # A new Yukon object

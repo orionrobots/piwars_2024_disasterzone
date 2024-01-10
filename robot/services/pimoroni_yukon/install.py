@@ -2,6 +2,8 @@ from typing import List
 import os
 
 from pyinfra.operations import files, pip
+from pyinfra.facts import files as fact_files
+from pyinfra.api.util import get_file_sha1
 from pyinfra.api import operation, StringCommand, FileUploadCommand, FactBase
 from pyinfra import host, local
 
@@ -27,22 +29,16 @@ def mpremote_sync_file(src, dest):
     dest=folder on micropython device attached to the remote robot
     """
     pi_dest = f"mpremote/{dest}"
-    if '/' in dest:
-        mpremote_folder, file_name = dest.rsplit('/', 1)
-    else:
-        mpremote_folder = "/"
-        file_name = dest
-    
-    folder_content = host.get_fact(MpRemoteFiles, path=mpremote_folder)
-    # If the file exists
-    if file_name in [item[1] for item in folder_content]:
-        # and has the same size
-        remote_file_size = [item for item in folder_content if item[1] == file_name][0][0]
-        local_file_size = os.stat(src).st_size
-        if remote_file_size == local_file_size:
-            # Check the content of the remote file and compare
+    # Use the tracer on the pi to check the file
+    remote_file = host.get_fact(fact_files.File, path=pi_dest)
+
+    if remote_file and remote_file['size'] == os.stat(src).st_size: 
+        # Check the content of the remote file on the pi and compare
+        remote_sum = host.get_fact(fact_files.Sha1File, path=pi_dest)
+        local_sum = get_file_sha1(src)
+        if local_sum == remote_sum:
             return
-    
+
     # update the robot copy
     yield from files.put( src, pi_dest)
     mpremote_command = f"{MPREMOTE_LOCATION} cp {pi_dest} :{dest}"
