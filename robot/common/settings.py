@@ -6,6 +6,7 @@ class RobotSettings(BaseSettings):
     pi_username: str
     mqtt_username: str
     mqtt_password: SecretStr
+    mqtt_port: int = 9001
     board_name: str
 
     class Config:
