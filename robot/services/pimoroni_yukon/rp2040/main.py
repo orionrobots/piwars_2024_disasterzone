@@ -1,4 +1,3 @@
-
 import sys
 import json
 import time
@@ -16,10 +15,10 @@ def mqtt_output(topic, message):
     print(f"mqtt_output##{topic}:{message}")
 
 def log(message):
-    mqtt_output('log/yukon, f'"{message}")
+    mqtt_output('log/yukon', f'"{message}"')
 
 class YukonManager:
-    last_contact = 0
+    last_contact = time.ticks_ms()
     async def run(self):
         # Setup the yukon
         yukon = Yukon() 
@@ -29,8 +28,6 @@ class YukonManager:
         right_motor_module = BigMotorModule(encoder_pio=0,    # Create a BigMotorModule object, with details of the encoder
                                     encoder_sm=1,
                                     counts_per_rev=MOTOR_CPR)
-        self.left_motor = left_motor_module.motor
-        self.right_motor = right_motor_module.motor
         try:
             yukon.register_with_slot(left_motor_module, SLOT3)
             yukon.register_with_slot(right_motor_module, SLOT2) 
@@ -39,13 +36,16 @@ class YukonManager:
             # Enable the modules
             left_motor_module.enable()
             right_motor_module.enable()
+            log("Getting motors")
+            self.left_motor = left_motor_module.motor
+            self.right_motor = right_motor_module.motor
             log("Starting main motor loop")
             # Service the stream
             while True:
                 asyncio.sleep(0.1)
                 yukon.monitored_sleep_ms(10)
-                if self.last_contact + 1 < time.monotonic():
-                    
+                if self.last_contact != 0 and time.ticks_diff(time.ticks_ms(), self.last_contact) > 1000:
+                    self.last_contact = 0
                     self.left_motor.stop(0)
                     self.right_motor.stop(0)
         finally:
@@ -57,40 +57,40 @@ class YukonManager:
         self.left_motor.speed(-speed)
         self.right_motor.enable()
         self.right_motor.speed(speed)
-        self.last_contact = time.monotonic()
+        self.last_contact = time.ticks_ms()
     
     def turn_right(self, speed):
         self.right_motor.enable()
         self.right_motor.speed(-speed)
         self.left_motor.enable()
         self.left_motor.speed(speed)
-        self.last_contact = time.monotonic()
+        self.last_contact = time.ticks_ms()
 
     def forward(self, speed, curve):
         self.left_motor.enable()
         self.right_motor.enable()
         self.left_motor.speed(speed - curve)
         self.right_motor.speed(speed + curve)
-        self.last_contact = time.monotonic()
+        self.last_contact = time.ticks_ms()
 
     def backward(self, speed, curve):
         self.left_motor.enable()
         self.right_motor.enable()
         self.left_motor.speed(speed - curve)
         self.right_motor.speed(speed + curve)
-        self.last_contact = time.monotonic()
+        self.last_contact = time.ticks_ms()
 
     def set_values(self, left, right):
         self.left_motor.enable()
         self.right_motor.enable()
         self.left_motor.speed(left)
         self.right_motor.speed(right)
-        self.last_contact = time.monotonic()
+        self.last_contact = time.ticks_ms()
 
     def stop(self):
         self.left_motor.stop(0)
         self.right_motor.stop(0)
-        self.last_contact = time.monotonic()
+        self.last_contact = time.ticks_ms()
 
 
 async def main():
@@ -104,7 +104,11 @@ async def main():
             break
         line = line.decode().strip()
         topic, payload = line.split(":", 1)
-        payload = json.loads(payload)
+        try:
+            payload = json.loads(payload)
+        except ValueError:
+            log(f"Invalid JSON received to Yukon: {line}")
+            continue
         log(f"Received message at Yukon: {line}")        
         if topic == "motors/left":
             yukon_manager.turn_left(payload)
