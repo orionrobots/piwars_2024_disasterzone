@@ -19,7 +19,7 @@ class SerialToMqtt(serial.threaded.LineReader):
     def log(self, msg):
         print(msg)
         if self.mqtt_client:
-            self.mqtt_client.publish("yukon/log", msg)
+            self.mqtt_client.publish("log/yukon_service", msg)
 
     def handle_line(self, line: str):
         """Lines of the format topic:payload - ie yukon/status:"ready" 
@@ -61,8 +61,9 @@ class YukonService(service_base.ServiceBase):
         self.serial_worker.mqtt_client = client
 
     def send_motor_message_to_yukon(self, client: Client, userdata, msg: MQTTMessage):
-        print(f"Sending message to Yukon: {msg.topic} {msg.payload}")
-        self.serial_worker.write_line(f"{msg.topic}:{msg.payload}")
+        serial_message=f"{msg.topic}:{msg.payload.decode()}"
+        print(f"Sending message to Yukon: {serial_message}")
+        self.serial_worker.write_line(f"{serial_message}")
 
 print("Creating service")
 service = YukonService(RobotSettings())
