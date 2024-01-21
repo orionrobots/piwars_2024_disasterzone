@@ -4,7 +4,16 @@ from pyinfra.operations import pip
 from pyinfra.facts import server
 from pyinfra import host
 
+from robot.common.settings import RobotSettings
+
 print(host.get_fact(server.LsbRelease))
 
+settings = RobotSettings()
+
+if settings.needs_system_pip:
+    pip_extra_install_args="--root-user-action ignore --break-system-packages"
+else:
+    pip_extra_install_args=""
+
 system_pip = functools.partial(pip.packages, 
-                               extra_install_args="--root-user-action ignore --break-system-packages")
+                               extra_install_args=pip_extra_install_args)
