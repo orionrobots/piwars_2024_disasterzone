@@ -12,4 +12,4 @@ environment = files.put(
         _sudo=True
     )
 
-common_changed = common_files.changed or environment.changed or common_pip_packages.changed
+common_changed = common_files.changed or environment.changed or any(package.changed for package in common_pip_packages)
