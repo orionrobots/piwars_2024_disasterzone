@@ -10,7 +10,7 @@ pip.packages(name="Install mpremote", packages=["mpremote"])
 apt.packages(name="Install packages", packages=['python3-serial'], present=True, _sudo=True)
 
 # Stop the service to release the serial port
-systemd.service(service="yukon", running=False)
+systemd.service(service="yukon", running=False, _sudo=True)
 
 file_sync = mpremote_sync_file(name="Copy main", src="robot/services/pimoroni_yukon/rp2040/main.py", dest="main.py")
 if file_sync.changed:
