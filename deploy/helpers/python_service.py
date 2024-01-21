@@ -17,14 +17,15 @@ def deploy_python_service(service_source_file, service_module, service_name, ser
     """Deploy a python service to the robot."""
     # Update the service source file
     source_file_update = files.put(
-        name="Copy the service source code",
         src=service_source_file,
         dest=service_source_file,
     )
-    yield from source_file_update
+    made_changes = False
+    for command in source_file_update:
+        made_changes = command
+        yield command
     # Create the service unit file
     service_file_update = files.template(
-        name=f"Create {service_name} service",
         src="deploy/helpers/python_service.j2",
         dest=f"/etc/systemd/system/{service_name}.service",
         mode="644",
@@ -34,14 +35,13 @@ def deploy_python_service(service_source_file, service_module, service_name, ser
         service_module=service_module,
         service_name=service_name,
         service_description=service_description,
-        _sudo=True
     )
-    yield from service_file_update
+    for command in service_file_update:
+        made_changes = command
+        yield command
     # Enable and restart the service
     yield from systemd.service(
-        name=f"Enable {service_name} service",
         service=f"{service_name}.service",
         enabled=True,
-        restarted=source_file_update.changed or service_file_update.changed or update_common.common_changed,
-        _sudo=True
+        restarted=made_changes or update_common.common_changed,
     )
