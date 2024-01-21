@@ -46,8 +46,7 @@ class YukonManager:
                 if self.last_contact != 0 and time.ticks_diff(time.ticks_ms(), self.last_contact) > 1000:
                     self.last_contact = 0
                     print("No contact from mqtt, stopping")
-                    self.left_motor.stop()
-                    self.right_motor.stop()
+                    self.stop()
         finally:
             # Put the board back into a safe state, regardless of how the program may have ended
             yukon.reset()
@@ -89,9 +88,8 @@ class YukonManager:
         self.last_contact = time.ticks_ms()
 
     def stop(self):
-        self.left_motor.stop(0)
-        self.right_motor.stop(0)
-        self.last_contact = time.ticks_ms()
+        self.left_motor.stop()
+        self.right_motor.stop()
 
 
 async def main():
