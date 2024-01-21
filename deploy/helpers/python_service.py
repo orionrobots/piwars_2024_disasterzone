@@ -13,8 +13,14 @@ from robot.common.settings import RobotSettings
 settings = RobotSettings()
 
 @operation
-def deploy_python_service(service_source_file, service_module, service_name, service_description):
-    """Deploy a python service to the robot."""
+def deploy_python_service(service_source_file, service_module, service_name, service_description, must_restart=False):
+    """Deploy a python service to the robot.
+    service_source_file is the source python file for the service
+    service_module is the python module for the service - the source file but from the top folder with dots
+    service_name is the name of the service for use in systemd
+    service_description is the description of the service for use in systemd - human readable
+    must_restart is a flag to force a restart of the service, even if nothing has changed
+    """
     # Update the service source file
     source_file_update = files.put(
         src=service_source_file,
@@ -44,6 +50,6 @@ def deploy_python_service(service_source_file, service_module, service_name, ser
     yield from systemd.service(
         service=f"{service_name}.service",
         enabled=True,
-        restarted=made_changes or service_changed or update_common.common_changed,
+        restarted=must_restart or made_changes or service_changed or update_common.common_changed,
         daemon_reload=service_changed,
     )
