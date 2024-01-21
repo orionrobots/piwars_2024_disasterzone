@@ -41,11 +41,15 @@ def mpremote_sync_file(src, dest):
         if local_sum == remote_sum:
             return
 
-    # update the robot copy
-    yield from files.put( src, pi_dest)
-    mpremote_command = f"{MPREMOTE_LOCATION} cp {pi_dest} :{dest}"
+    # update the new robot copy
+    new_copy = f"{pi_dest}__new" # temporary new copy, kept until we've succeeded
+    yield from files.put( src, new_copy)
+    mpremote_command = f"{MPREMOTE_LOCATION} cp {new_copy} :{dest}"
     print(mpremote_command)
     yield StringCommand(mpremote_command)
+    # When it succeeds, delete the temporary copy
+    yield from files.put(src, pi_dest)
+    yield from files.file(new_copy, present=False)
 
 
 @operation
