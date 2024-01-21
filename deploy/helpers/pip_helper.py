@@ -1,12 +1,8 @@
 import functools
 
 from pyinfra.operations import pip
-from pyinfra.facts import server
-from pyinfra import host
 
 from robot.common.settings import RobotSettings
-
-print(host.get_fact(server.LsbRelease))
 
 settings = RobotSettings()
 
