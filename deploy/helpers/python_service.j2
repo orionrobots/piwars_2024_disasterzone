@@ -6,7 +6,7 @@ After=mosquitto.service
 Type=simple
 Restart=always
 WorkingDirectory=/home/{{ pi_username }}/
-ExecStart=/usr/bin/python3 -m {{ service_module }}
+ExecStart=/usr/bin/python3 -u -m {{ service_module }}
 EnvironmentFile=/etc/robot.env
 
 [Install]

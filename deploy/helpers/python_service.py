@@ -36,12 +36,14 @@ def deploy_python_service(service_source_file, service_module, service_name, ser
         service_name=service_name,
         service_description=service_description,
     )
+    service_changed = False
     for command in service_file_update:
-        made_changes = command
+        service_changed = command
         yield command
     # Enable and restart the service
     yield from systemd.service(
         service=f"{service_name}.service",
         enabled=True,
-        restarted=made_changes or update_common.common_changed,
+        restarted=made_changes or service_changed or update_common.common_changed,
+        daemon_reload=service_changed,
     )
