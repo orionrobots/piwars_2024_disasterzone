@@ -12,10 +12,11 @@ GEAR_RATIO = 30                         # The gear ratio of the motor
 ENCODER_CPR = 12                        # The number of counts a single encoder shaft revolution will produce
 MOTOR_CPR = GEAR_RATIO * ENCODER_CPR    # The number of counts a single motor shaft revolution will produce
 
+def mqtt_output(topic, message):
+    print(f"mqtt_output##{topic}:{message}")
 
 def log(message):
-    print(f'log/yukon: "{message}"')
-
+    mqtt_output('log/yukon, f'"{message}")
 
 class YukonManager:
     last_contact = 0
@@ -117,3 +118,5 @@ async def main():
             yukon_manager.backward(payload.get("speed", 1), payload.get("curve", 0))
         elif topic == "motors/set_values":
             yukon_manager.set_values(payload["left"], payload["right"])
+
+asyncio.run(main())
