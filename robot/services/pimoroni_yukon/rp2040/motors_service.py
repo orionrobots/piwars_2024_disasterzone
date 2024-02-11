@@ -113,7 +113,7 @@ async def main():
                 yukon_manager.turn_left(payload)
             elif topic == "motors/right":
                 yukon_manager.turn_right(payload)
-            elif topic == "motors/stop":
+            elif topic == "motors/stop" or topic == "all/stop":
                 yukon_manager.stop()
             elif topic == "motors/forward":
                 yukon_manager.forward(payload.get("speed", 1), payload.get("curve", 0))
@@ -123,7 +123,7 @@ async def main():
                 yukon_manager.set_values(payload.get("left", 0), payload.get("right",0))
             else:
                 print(f"Invalid message received at Yukon: {line}")
-        except KeyError as err:
+        except (KeyError, AttributeError) as err:
             print(f"Invalid message received at Yukon: {line}, {err}")
 
 asyncio.run(main())
