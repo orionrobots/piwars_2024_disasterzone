@@ -70,5 +70,4 @@ service = YukonService(RobotSettings())
 print("Connecting")
 client = service_base.connect(service)
 print("Connected. Starting loop")
-while True:
-    client.loop()
+client.loop_forever()
