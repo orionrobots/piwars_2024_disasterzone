@@ -12,4 +12,10 @@ environment = files.put(
         _sudo=True
     )
 
+files.link(
+    name="Link the environment file",
+    target="/etc/robot.env",
+    path="~/.env",
+)
+
 common_changed = common_files.changed or environment.changed or any(package.changed for package in common_pip_packages)
