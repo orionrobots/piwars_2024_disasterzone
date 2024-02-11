@@ -15,12 +15,12 @@ class ServiceBase:
         print(msg.topic+" "+str(msg.payload))
 
 
-def connect(service: ServiceBase):
+def connect(service: ServiceBase) -> mqtt.Client:
     """Get the service connected, and return the new client"""
     settings = RobotSettings()
     host, port = "localhost", settings.mqtt_port
     client = mqtt.Client(client_id=f"{service.name}_{randint(0, 1000)}", transport="websockets")
-
+    client.will_set("all/stop", 0)
     client.username_pw_set(settings.mqtt_username, settings.mqtt_password.get_secret_value())
 
     print("Connecting")
