@@ -1,0 +1,13 @@
+[Unit]
+Description={{ service_description }}
+After=mosquitto.service
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/{{ pi_username }}/
+ExecStart=/usr/bin/python3 -u -m {{ service_module }}
+EnvironmentFile=/etc/robot.env
+
+[Install]
+WantedBy=multi-user.target

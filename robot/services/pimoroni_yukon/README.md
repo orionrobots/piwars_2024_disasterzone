@@ -5,6 +5,9 @@ Slot usage plans:
 - 4 is an LED Strip
 - 5 Servo motors
 
+
+| Other services | --> | MQTT Broker (Mosquitto) | --> | Yukon Service (Runing on the Pi) | --> Serial port ==> | Yukon |
+
 ## Links and docs
 
 - https://github.com/pimoroni/yukon/blob/main/docs/reference.md#pimoroni_yukon-reference
