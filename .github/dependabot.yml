@@ -11,3 +11,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/robot_control"
+    schedule:
+      interval: "daily"
