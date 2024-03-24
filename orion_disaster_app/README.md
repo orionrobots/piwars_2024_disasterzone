@@ -1,4 +1,4 @@
-# Robot control app
+# Orion disaster robot control app
 
 This is an app designed to interact with the robot from a device.
 
