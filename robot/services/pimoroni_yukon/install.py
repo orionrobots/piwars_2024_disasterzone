@@ -1,6 +1,3 @@
-
-
-
 from pyinfra.operations import pip, apt, systemd
 
 from deploy.helpers.mpremote_tools import mpremote_sync_file, mpremote_reset
