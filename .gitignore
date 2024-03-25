@@ -14,7 +14,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -202,6 +201,9 @@ yarn-error.*
 
 # custom
 robot_control/env.js
+orion_disaster_app/env.js
+orion_disaster_app/ios
+
 # Hardware design backups/outputs
 *.stl
 *.FCBak
