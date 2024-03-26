@@ -12,7 +12,7 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "npm"
-    directory: "/robot_control"
+    directory: "/orion_disaster_app"
     schedule:
       interval: "daily"
       # Ensure we dont try to bump exp past 49.0 (ignore major?)
