@@ -15,3 +15,7 @@ updates:
     directory: "/robot_control"
     schedule:
       interval: "daily"
+      # Ensure we dont try to bump exp past 49.0 (ignore major?)
+    ignore:
+      - dependency-name: "expo"
+        update-types: ["version-update:semver-major"]

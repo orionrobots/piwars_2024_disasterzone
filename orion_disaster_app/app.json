@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "robot_control",
-    "slug": "robot_control",
+    "name": "orion_disaster",
+    "slug": "orion_disaster",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +15,29 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "orionrobots.disasterzone"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "orionrobots.disasterzone"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d2f0d368-2580-496a-b402-b3f5602c7f04"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d2f0d368-2580-496a-b402-b3f5602c7f04"
     }
   }
 }

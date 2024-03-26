@@ -26,7 +26,7 @@ class YukonManager:
                                     encoder_sm=1,
                                     counts_per_rev=MOTOR_CPR)
         try:
-            yukon.register_with_slot(right_motor_module, SLOT3)
+            yukon.register_with_slot(right_motor_module, SLOT5)
             yukon.register_with_slot(left_motor_module, SLOT2) 
             yukon.verify_and_initialise()
             yukon.enable_main_output()
