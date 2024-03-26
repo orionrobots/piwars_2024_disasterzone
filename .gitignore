@@ -203,6 +203,7 @@ yarn-error.*
 robot_control/env.js
 orion_disaster_app/env.js
 orion_disaster_app/ios
+orion_disaster_app/android
 
 # Hardware design backups/outputs
 *.stl
