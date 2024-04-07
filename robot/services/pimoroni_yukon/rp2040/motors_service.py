@@ -5,6 +5,7 @@ import uasyncio as asyncio
 
 from pimoroni_yukon import Yukon, SLOT1, SLOT2, SLOT3, SLOT4, SLOT5, SLOT6
 from pimoroni_yukon.modules import BigMotorModule
+from pimoroni_yukon.modules import QuadServoRegModule as QuadServoModule
 from pimoroni import REVERSED_DIR
 
 GEAR_RATIO = 30                         # The gear ratio of the motor
@@ -16,18 +17,27 @@ def mqtt_output(topic, message):
 
 class YukonManager:
     last_contact = 0
+    left_motor = None
+    right_motor = None
+
     async def run(self):
         # Setup the yukon
+        print("Setting up Yukon")
         yukon = Yukon()
+        print("Setting up modules")
         left_motor_module  = BigMotorModule(encoder_pio=0,    # Create a BigMotorModule object, with details of the encoder
                                     encoder_sm=0,
                                     counts_per_rev=MOTOR_CPR)
         right_motor_module = BigMotorModule(encoder_pio=0,    # Create a BigMotorModule object, with details of the encoder
                                     encoder_sm=1,
                                     counts_per_rev=MOTOR_CPR)
+        servo_module = QuadServoModule()
         try:
+            print("Registering modules")
             yukon.register_with_slot(right_motor_module, SLOT5)
-            yukon.register_with_slot(left_motor_module, SLOT2) 
+            yukon.register_with_slot(left_motor_module, SLOT2)
+            yukon.register_with_slot(servo_module, SLOT4)
+            print("Verifying and initialising")
             yukon.verify_and_initialise()
             yukon.enable_main_output()
             # Enable the modules
@@ -43,10 +53,13 @@ class YukonManager:
             while True:
                 await asyncio.sleep(0.1)
                 yukon.monitor_once()
-                if self.last_contact != 0 and time.ticks_diff(time.ticks_ms(), self.last_contact) > 1000:
-                    self.last_contact = 0
-                    print("No contact from mqtt, stopping")
-                    self.stop()
+                if time.ticks_diff(time.ticks_ms(), self.last_contact) % 1000 == 0:
+                    readings = yukon.get_readings()
+                    print(readings)
+                    if self.last_contact != 0:
+                        self.last_contact = 0
+                        print("No contact from mqtt, stopping")
+                        self.stop()
         finally:
             # Put the board back into a safe state, regardless of how the program may have ended
             yukon.reset()
@@ -57,7 +70,7 @@ class YukonManager:
         self.right_motor.enable()
         self.right_motor.speed(speed)
         self.last_contact = time.ticks_ms()
-    
+
     def turn_right(self, speed):
         self.right_motor.enable()
         self.right_motor.speed(-speed)
@@ -101,12 +114,14 @@ async def main():
     while True:
         line = await input_stream.readline()
         line = line.decode().strip()
+        if not line:
+            continue
         print(f"Received message at Yukon: {line}")
         try:
             topic, payload = line.split(":", 1)
             payload = json.loads(payload)
         except ValueError as err:
-            print(f"Invalid message received at Yukon: {line}, {err}")
+            print(f"Invalid json message received at Yukon: `{line}`, {err}")
             continue
         try:
             if topic == "motors/left":
@@ -122,8 +137,8 @@ async def main():
             elif topic == "motors/set_values":
                 yukon_manager.set_values(payload.get("left", 0), payload.get("right",0))
             else:
-                print(f"Invalid message received at Yukon: {line}")
-        except (KeyError, AttributeError) as err:
-            print(f"Invalid message received at Yukon: {line}, {err}")
+                print(f"Invalid message topic received at Yukon: `{line}`")
+        except (KeyError) as err:
+            print(f"Invalid message fields received at Yukon: `{line}`, {err}")
 
 asyncio.run(main())

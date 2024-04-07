@@ -22,7 +22,7 @@ class SerialToMqtt(serial.threaded.LineReader):
             self.mqtt_client.publish("log/yukon_service", msg)
 
     def handle_line(self, line: str):
-        """Lines of the format topic:payload - ie yukon/status:"ready" 
+        """Lines of the format topic:payload - ie yukon/status:"ready"
         Start with mqtt_output## to send to mqtt
         """
         if not line.startswith("mqtt_output##"):
@@ -44,7 +44,17 @@ class YukonService(service_base.ServiceBase):
     def __init__(self, settings: RobotSettings) -> None:
         super().__init__()
         print("Opening serial port")
-        self.board = serial.Serial("/dev/ttyACM0", 115200, timeout=0.1)
+
+        devices_to_try = ["/dev/ttyACM0", "/dev/ttyACM1"]
+        for device in devices_to_try:
+            try:
+                self.board = serial.Serial(device, 115200, timeout=0.1)
+            except serial.SerialException as e:
+                print(f"Failed to open {device}: {e}")
+                continue
+        else:
+            raise RuntimeError("Failed to open any serial port")
+
         # Start listening to the serial port
         print("Starting serial thread")
         self.serial_worker = SerialToMqtt()
