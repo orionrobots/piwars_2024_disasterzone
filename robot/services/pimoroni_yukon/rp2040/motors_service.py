@@ -57,7 +57,7 @@ class YukonManager:
                 if yukon.is_pressed('A'):
                     mqtt_output("yukon/button_a", "pressed")
                 if yukon.is_pressed('B'):
-                    mqtt_output("yukon/button_a", "pressed")
+                    mqtt_output("yukon/button_b", "pressed")
 
                 if time.ticks_diff(time.ticks_ms(), self.last_contact) % 1000 == 0:
                     readings = yukon.get_readings()
