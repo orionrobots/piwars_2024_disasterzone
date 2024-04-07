@@ -51,6 +51,7 @@ class YukonService(service_base.ServiceBase):
         for device in devices_to_try:
             try:
                 self.board = serial.Serial(device, 115200, timeout=0.1)
+                break
             except serial.SerialException as e:
                 print(f"Failed to open {device}: {e}")
                 continue
@@ -69,8 +70,12 @@ class YukonService(service_base.ServiceBase):
         print("Subscribing")
         client.subscribe("motors/#")
         client.subscribe("leds/#")
+        client.subscribe("all/#")
+        client.subscribe("servos/#")
         client.message_callback_add("motors/#", self.send_message_to_yukon)
         client.message_callback_add("leds/#", self.send_message_to_yukon)
+        client.message_callback_add("all/#", self.send_message_to_yukon)
+        client.message_callback_add("servos/#", self.send_message_to_yukon)
         print("Callbacks added")
         self.serial_worker.mqtt_client = client
 

@@ -32,18 +32,19 @@ class YukonManager:
         right_motor_module = BigMotorModule(encoder_pio=0,    # Create a BigMotorModule object, with details of the encoder
                                     encoder_sm=1,
                                     counts_per_rev=MOTOR_CPR)
-        servo_module = QuadServoModule()
+        self.servo_module = QuadServoModule()
         try:
             print("Registering modules")
             yukon.register_with_slot(right_motor_module, SLOT5)
             yukon.register_with_slot(left_motor_module, SLOT2)
-            yukon.register_with_slot(servo_module, SLOT4)
+            yukon.register_with_slot(self.servo_module, SLOT4)
             print("Verifying and initialising")
             yukon.verify_and_initialise()
             yukon.enable_main_output()
             # Enable the modules
             left_motor_module.enable()
             right_motor_module.enable()
+            self.servo_module.enable()
             print("Getting motors")
             self.left_motor = left_motor_module.motor
             self.right_motor = right_motor_module.motor
@@ -65,10 +66,20 @@ class YukonManager:
                     if self.last_contact != 0:
                         self.last_contact = 0
                         print("No contact from mqtt, stopping")
-                        self.stop()
+                        self.stop_wheels()
         finally:
             # Put the board back into a safe state, regardless of how the program may have ended
             yukon.reset()
+
+    def set_servo(self, position: float, index: int):
+        self.servo_module.servos[index].value(position)
+
+    def disable_servo(self, index: int=None):
+        if index is not None:
+            self.servo_module.servos[index].disable()
+        else:
+            for servo in self.servo_module.servos:
+                servo.disable()
 
     def set_led_a(self, state: bool):
         self.yukon.set_led('A', state)
@@ -112,9 +123,14 @@ class YukonManager:
         self.right_motor.speed(right)
         self.last_contact = time.ticks_ms()
 
-    def stop(self):
+    def stop_wheels(self):
         self.left_motor.stop()
         self.right_motor.stop()
+
+    def all_stop(self):
+        self.left_motor.stop()
+        self.right_motor.stop()
+        self.disable_servo()
 
 
 async def main():
@@ -140,8 +156,14 @@ async def main():
                 yukon_manager.turn_left(payload)
             elif topic == "motors/right":
                 yukon_manager.turn_right(payload)
-            elif topic == "motors/stop" or topic == "all/stop":
-                yukon_manager.stop()
+            elif topic == "servos/set":
+                yukon_manager.set_servo(payload["position"], payload["index"])
+            elif topic == "servos/stop":
+                yukon_manager.disable_servo(payload["index"])
+            elif topic == "motors/stop":
+                yukon_manager.stop_wheels()
+            elif topic == "all/stop":
+                yukon_manager.all_stop()
             elif topic == "motors/forward":
                 yukon_manager.forward(payload.get("speed", 1), payload.get("curve", 0))
             elif topic == "motors/backward":
