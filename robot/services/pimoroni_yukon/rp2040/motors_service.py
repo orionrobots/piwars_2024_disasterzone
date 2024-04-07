@@ -24,6 +24,7 @@ class YukonManager:
         # Setup the yukon
         print("Setting up Yukon")
         yukon = Yukon()
+        self.yukon = yukon
         print("Setting up modules")
         left_motor_module  = BigMotorModule(encoder_pio=0,    # Create a BigMotorModule object, with details of the encoder
                                     encoder_sm=0,
@@ -53,6 +54,11 @@ class YukonManager:
             while True:
                 await asyncio.sleep(0.1)
                 yukon.monitor_once()
+                if yukon.is_pressed('A'):
+                    mqtt_output("yukon/button_a", "pressed")
+                if yukon.is_pressed('B'):
+                    mqtt_output("yukon/button_a", "pressed")
+
                 if time.ticks_diff(time.ticks_ms(), self.last_contact) % 1000 == 0:
                     readings = yukon.get_readings()
                     print(readings)
@@ -63,6 +69,12 @@ class YukonManager:
         finally:
             # Put the board back into a safe state, regardless of how the program may have ended
             yukon.reset()
+
+    def set_led_a(self, state: bool):
+        self.yukon.set_led('A', state)
+
+    def set_led_b(self, state: bool):
+        self.yukon.set_led('B', state)
 
     def turn_left(self, speed):
         self.left_motor.enable()
@@ -136,6 +148,10 @@ async def main():
                 yukon_manager.backward(payload.get("speed", 1), payload.get("curve", 0))
             elif topic == "motors/set_values":
                 yukon_manager.set_values(payload.get("left", 0), payload.get("right",0))
+            elif topic == "leds/set/a":
+                yukon_manager.set_led_a(payload)
+            elif topic == "leds/set/b":
+                yukon_manager.set_led_b(payload)
             else:
                 print(f"Invalid message topic received at Yukon: `{line}`")
         except (KeyError) as err:

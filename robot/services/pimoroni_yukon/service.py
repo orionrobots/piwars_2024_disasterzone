@@ -41,6 +41,8 @@ class SerialToMqtt(serial.threaded.LineReader):
 
 class YukonService(service_base.ServiceBase):
     name = "yukon"
+    board: serial.Serial
+
     def __init__(self, settings: RobotSettings) -> None:
         super().__init__()
         print("Opening serial port")
@@ -52,8 +54,8 @@ class YukonService(service_base.ServiceBase):
             except serial.SerialException as e:
                 print(f"Failed to open {device}: {e}")
                 continue
-        else:
-            raise RuntimeError("Failed to open any serial port")
+        if not self.board:
+            raise serial.SerialException(f"Failed to open any of {devices_to_try}")
 
         # Start listening to the serial port
         print("Starting serial thread")
@@ -66,11 +68,13 @@ class YukonService(service_base.ServiceBase):
         super().on_connect(client, userdata, flags, rc)
         print("Subscribing")
         client.subscribe("motors/#")
-        client.message_callback_add("motors/#", self.send_motor_message_to_yukon)
+        client.subscribe("leds/#")
+        client.message_callback_add("motors/#", self.send_message_to_yukon)
+        client.message_callback_add("leds/#", self.send_message_to_yukon)
         print("Callbacks added")
         self.serial_worker.mqtt_client = client
 
-    def send_motor_message_to_yukon(self, client: Client, userdata, msg: MQTTMessage):
+    def send_message_to_yukon(self, client: Client, userdata, msg: MQTTMessage):
         serial_message=f"{msg.topic}:{msg.payload.decode()}"
         print(f"Sending message to Yukon: {serial_message}")
         self.serial_worker.write_line(f"{serial_message}")
