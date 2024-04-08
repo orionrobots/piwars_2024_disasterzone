@@ -15,8 +15,12 @@ Each should have the following:
 To send a message to a service, publish to the topic:
 
 ```bash
-source /etc/robot.env 
+source /etc/robot.env
 mosquitto_pub -t "motors/forward" -m '{"speed": 1}' -u $MQTT_USERNAME -P $MQTT_PASSWORD
 ```
 
 Robot.env is deployed from your .env, and will contain the needed secrets for mqtt access.
+
+## Tips
+
+Vacuum logs - `journalctl --vacuum-time=2d` - keep only 2 days. These MQTT services can generate a lot of logs!

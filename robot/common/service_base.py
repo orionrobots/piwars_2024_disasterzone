@@ -1,18 +1,26 @@
-import paho.mqtt.client as mqtt
+import json
 from random import randint
+
+import paho.mqtt.client as mqtt
+
 from robot.common.settings import RobotSettings
 
 
 class ServiceBase:
     name = "base"
-    
+    mqtt_client: mqtt.Client
+
     def on_connect(self, client, userdata, flags, rc):
         """Override, make subscriptions here"""
+        self.mqtt_client = client
         print("Connected with result code "+str(rc))
-    
+
     def on_message(self, client, userdata, msg):
         """Handle messages here"""
         print(msg.topic+" "+str(msg.payload))
+
+    def publish_json(self, topic, data):
+        self.mqtt_client.publish(topic, json.dumps(data))
 
 
 def connect(service: ServiceBase) -> mqtt.Client:

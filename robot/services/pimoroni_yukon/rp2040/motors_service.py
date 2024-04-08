@@ -159,7 +159,7 @@ async def main():
             elif topic == "servos/set":
                 yukon_manager.set_servo(payload["position"], payload["index"])
             elif topic == "servos/stop":
-                yukon_manager.disable_servo(payload["index"])
+                yukon_manager.disable_servo(payload.get("index"))
             elif topic == "motors/stop":
                 yukon_manager.stop_wheels()
             elif topic == "all/stop":
@@ -176,7 +176,7 @@ async def main():
                 yukon_manager.set_led_b(payload)
             else:
                 print(f"Invalid message topic received at Yukon: `{line}`")
-        except (KeyError) as err:
+        except (KeyError, AttributeError) as err:
             print(f"Invalid message fields received at Yukon: `{line}`, {err}")
 
 asyncio.run(main())
