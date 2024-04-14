@@ -56,3 +56,28 @@ Refer to section 3.2.1 in https://datasheets.raspberrypi.com/pico/getting-starte
 - cd into the directory.
 - mpremote cp lib :
 - You probably want to run the install/restart the service now
+
+## Sunfounder Line Follower Module
+
+- https://github.com/sunfounder/SunFounder_Line_Follower
+```python
+>>> from machine import Pin, I2C
+>>> i2c = I2C(0)
+>>> i2c.scan()
+[17, 32, 38]
+>>> [int (n) for n in i2c.readfrom(0x11, 10)]
+[0, 12, 0, 33, 0, 17, 0, 16, 0, 9]
+>>> [int (n) for n in i2c.readfrom(0x11, 10)]
+[0, 182, 0, 169, 0, 162, 0, 219, 0, 175]
+>>> i2c.readfrom(0x11, 10)
+b'\x00\x0e\x00!\x00\x11\x00\x12\x00\t'
+>>> struct.unpack(">HHHHH",  i2c.readfrom(0x11, 10))
+(13, 13, 15, 16, 7)
+>>> struct.unpack(">HHHHH",  i2c.readfrom(0x11, 10))
+(11, 123, 389, 406, 327)
+```
+Device address is 0x11. 0x32 and 0x38 are IO extenders on the Yukon.
+
+## Line Following Module MQTT Protocol
+- Control messages topics are 'line_follower/control {"enabled": true}' and 'line_follower/control {"enabled": false}'.
+- The line sensor readings are published to 'line_follower/differences' as a JSON object: [0, 0, 0, 0]

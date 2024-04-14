@@ -1,7 +1,9 @@
 import sys
 import json
 import time
+
 import uasyncio as asyncio
+from line_following import LineFollower
 
 from pimoroni_yukon import Yukon, SLOT1, SLOT2, SLOT3, SLOT4, SLOT5, SLOT6
 from pimoroni_yukon.modules import BigMotorModule, DualMotorModule
@@ -20,6 +22,7 @@ class YukonManager:
     left_motor = None
     right_motor = None
     ready = False
+    line_follower_enabled = False
 
     async def run(self):
         # Setup the yukon
@@ -44,6 +47,7 @@ class YukonManager:
             print("Verifying and initialising")
             yukon.verify_and_initialise(allow_discrepencies=True)
             yukon.enable_main_output()
+            line_follower = LineFollower(i2c=yukon.i2c)
             # Enable the modules
             left_motor_module.enable()
             right_motor_module.enable()
@@ -64,7 +68,9 @@ class YukonManager:
                     mqtt_output("yukon/button_a", "pressed")
                 if yukon.is_pressed('B'):
                     mqtt_output("yukon/button_b", "pressed")
-
+                if self.line_follower_enabled:
+                    differences = line_follower.get_differences()
+                    mqtt_output("line_follower/differences", json.dumps(differences))
                 if time.ticks_diff(time.ticks_ms(), self.last_contact) % 1000 == 0:
                     readings = yukon.get_readings()
                     print(readings)
@@ -199,6 +205,9 @@ async def main():
                 yukon_manager.set_led_a(payload)
             elif topic == "leds/set/b":
                 yukon_manager.set_led_b(payload)
+            elif topic == "line_follower/control":
+                if "enabled" in payload:
+                    yukon_manager.line_follower_enabled = payload["enabled"]
             else:
                 print(f"Invalid message topic received at Yukon: `{line}`")
         except (KeyError, AttributeError) as err:

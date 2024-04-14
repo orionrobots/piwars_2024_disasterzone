@@ -10,7 +10,8 @@ apt.packages(name="Install packages", packages=['python3-serial'], present=True,
 systemd.service(name="Stopping to release serial port", service="yukon", running=False, _sudo=True)
 
 file_sync = mpremote_sync_file(name="Copy main", src="robot/services/pimoroni_yukon/rp2040/motors_service.py", dest="main.py")
-if file_sync.changed:
+file_sync2 = mpremote_sync_file(name="Copy line following", src="robot/services/pimoroni_yukon/rp2040/line_following.py", dest="line_following.py")
+if file_sync.changed or file_sync2.changed:
     mpremote_reset(name="Reset the Yukon")
 
 deploy_python_service(
