@@ -6,6 +6,10 @@ from paho.mqtt.client import MQTTMessage, Client
 from robot.common import service_base
 from robot.common.settings import RobotSettings
 
+ROLLERS_SPEED = 0.7
+TRIGGER_FIRING_POSITION = -50
+PAN_SCALE = -30
+TILT_SCALE = 30
 
 class PS4ControllerService(service_base.ServiceBase):
     name = "ps4_joypad"
@@ -35,18 +39,18 @@ class PS4ControllerService(service_base.ServiceBase):
                             self.publish_json("servos/set", {"index": 0, "position": 0})
                             self.publish_json("servos/set", {"index": 1, "position": 0})
                         elif joystick.rx != 0 or joystick.ry != 0:
-                            self.publish_json("servos/set", {"index": 0, "position": joystick.rx * -30})
-                            self.publish_json("servos/set", {"index": 1, "position": joystick.ry * 30})
+                            self.publish_json("servos/set", {"index": 0, "position": joystick.rx * PAN_SCALE})
+                            self.publish_json("servos/set", {"index": 1, "position": joystick.ry * TILT_SCALE})
                             servo_centered = False
                         joystick.check_presses()
-                        if "l2" in joystick.presses:
-                            self.publish_json("servos/set", {"index": 2, "position": -50})
-                        elif "l2" in joystick.releases:
-                            self.publish_json("servos/set", {"index": 2, "position": 0})
                         if "r2" in joystick.presses:
-                            self.publish_json("rollers/start", {})
+                            self.publish_json("servos/set", {"index": 2, "position": TRIGGER_FIRING_POSITION})
                         elif "r2" in joystick.releases:
-                            self.publish_json("rollers/stop", {})
+                            self.publish_json("servos/set", {"index": 2, "position": 0})
+                        if "l2" in joystick.presses:
+                            self.publish_json("dual_motors/set", {"speed": ROLLERS_SPEED, "index": 0})
+                        elif "l2" in joystick.releases:
+                            self.publish_json("dual_motors/stop", {"index": 0})
                         if "triangle" in joystick.presses:
                             self.publish_json("all/stop", {})
                         sleep(1/50)

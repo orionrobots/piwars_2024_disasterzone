@@ -72,10 +72,12 @@ class YukonService(service_base.ServiceBase):
         client.subscribe("leds/#")
         client.subscribe("all/#")
         client.subscribe("servos/#")
+        client.subscribe("dual_motors/#")
         client.message_callback_add("motors/#", self.send_message_to_yukon)
         client.message_callback_add("leds/#", self.send_message_to_yukon)
         client.message_callback_add("all/#", self.send_message_to_yukon)
         client.message_callback_add("servos/#", self.send_message_to_yukon)
+        client.message_callback_add("dual_motors/#", self.send_message_to_yukon)
         print("Callbacks added")
         self.serial_worker.mqtt_client = client
 

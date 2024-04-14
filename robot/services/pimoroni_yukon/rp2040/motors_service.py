@@ -4,7 +4,7 @@ import time
 import uasyncio as asyncio
 
 from pimoroni_yukon import Yukon, SLOT1, SLOT2, SLOT3, SLOT4, SLOT5, SLOT6
-from pimoroni_yukon.modules import BigMotorModule
+from pimoroni_yukon.modules import BigMotorModule, DualMotorModule
 from pimoroni_yukon.modules import QuadServoRegModule as QuadServoModule
 from pimoroni import REVERSED_DIR
 
@@ -19,6 +19,7 @@ class YukonManager:
     last_contact = 0
     left_motor = None
     right_motor = None
+    ready = False
 
     async def run(self):
         # Setup the yukon
@@ -33,24 +34,28 @@ class YukonManager:
                                     encoder_sm=1,
                                     counts_per_rev=MOTOR_CPR)
         self.servo_module = QuadServoModule()
+        self.dual_motor_module = DualMotorModule()
         try:
             print("Registering modules")
             yukon.register_with_slot(right_motor_module, SLOT5)
             yukon.register_with_slot(left_motor_module, SLOT2)
             yukon.register_with_slot(self.servo_module, SLOT4)
+            yukon.register_with_slot(self.dual_motor_module, SLOT3)
             print("Verifying and initialising")
-            yukon.verify_and_initialise()
+            yukon.verify_and_initialise(allow_discrepencies=True)
             yukon.enable_main_output()
             # Enable the modules
             left_motor_module.enable()
             right_motor_module.enable()
             self.servo_module.enable()
+            self.dual_motor_module.enable()
             print("Getting motors")
             self.left_motor = left_motor_module.motor
             self.right_motor = right_motor_module.motor
             self.left_motor.direction(REVERSED_DIR)
             self.right_motor.direction(REVERSED_DIR)
             print("Starting main motor loop")
+            self.ready = True
             # Service the stream
             while True:
                 await asyncio.sleep(0.1)
@@ -80,6 +85,19 @@ class YukonManager:
         else:
             for servo in self.servo_module.servos:
                 servo.disable()
+
+    def set_dual_motor(self, speed: float, index: int):
+        if index >= len(self.dual_motor_module.motors):
+            raise ValueError(f"Invalid motor index {index}")
+        if speed < -1 or speed > 1:
+            raise ValueError(f"Invalid speed value {speed}")
+        self.dual_motor_module.motors[index].speed(speed)
+        self.dual_motor_module.motors[index].enable()
+
+    def stop_dual_motor(self, index: int):
+        if index >= len(self.dual_motor_module.motors):
+            raise ValueError(f"Invalid motor index {index}")
+        self.dual_motor_module.motors[index].stop()
 
     def set_led_a(self, state: bool):
         self.yukon.set_led('A', state)
@@ -152,10 +170,17 @@ async def main():
             print(f"Invalid json message received at Yukon: `{line}`, {err}")
             continue
         try:
+            if not yukon_manager.ready:
+                print("Yukon not ready, ignoring message")
+                continue
             if topic == "motors/left":
                 yukon_manager.turn_left(payload)
             elif topic == "motors/right":
                 yukon_manager.turn_right(payload)
+            elif topic == "dual_motors/set":
+                yukon_manager.set_dual_motor(payload["speed"], payload["index"])
+            elif topic == "dual_motors/stop":
+                yukon_manager.stop_dual_motor(payload["index"])
             elif topic == "servos/set":
                 yukon_manager.set_servo(payload["position"], payload["index"])
             elif topic == "servos/stop":

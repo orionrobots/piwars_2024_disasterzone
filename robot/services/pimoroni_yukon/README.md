@@ -26,8 +26,33 @@ We will do the follwoing:
 
 The communication protocol can be nice and simple. Since we are working with MQTT, we can translate to serial:
 - The service subscribes to topics.
-- Any topic it's subscribed to is passed on to the robot - topic/name:payload 
+- Any topic it's subscribed to is passed on to the robot - topic/name:payload
 - An end of payload is denoted by what? Its a line for now. topic/name:payload\n.
 - Any serial responses are published to the topic: topic/name:payload
 
 The commands for the motor will be the same as other motor services here.
+
+## Mounting and reflashing the firmware on the RP2040 on Yukon
+
+From time to time, a micropython firmware update may be needed. This is how you do it:
+
+- Download the latest firmware for Yukon.
+- Stop the yukon service with: `sudo systemctl stop yukon`
+- Power off the yukon.
+- Hold the boot/user button and power it on.
+- `sudo mkdir -p /mnt/pico`
+- `sudo mount  sudo mount /dev/sda1 /mnt/pico`
+- `sudo cp <firmware> /mnt/pico`
+- `sudo sync`
+- `sudo umount /mnt/pico`
+- You should probably run the installer here again.
+
+Refer to section 3.2.1 in https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf.
+
+## Updating the Pimoroni yukon libraries
+
+- Stop the yukon service with: `sudo systemctl stop yukon`
+- Download the libaries, unzip them.
+- cd into the directory.
+- mpremote cp lib :
+- You probably want to run the install/restart the service now
