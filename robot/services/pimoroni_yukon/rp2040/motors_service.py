@@ -82,6 +82,17 @@ class YukonManager:
             # Put the board back into a safe state, regardless of how the program may have ended
             yukon.reset()
 
+    async def move_servo(self, index :int, position: float, seconds :float =1, steps: int=100):
+        time_per_step = seconds / steps
+        servo = self.servo_module.servos[index]
+        servo.enable()
+        initial_value = servo.value()
+        step_size = (position - initial_value) / steps
+        for step in range(steps):
+            servo.value(initial_value + step_size * step)
+            await asyncio.sleep(time_per_step)
+        servo.value(position)
+
     def set_servo(self, position: float, index: int):
         self.servo_module.servos[index].value(position)
 
@@ -189,6 +200,14 @@ async def main():
                 yukon_manager.stop_dual_motor(payload["index"])
             elif topic == "servos/set":
                 yukon_manager.set_servo(payload["position"], payload["index"])
+            elif topic == "servos/move":
+                asyncio.create_task(
+                    yukon_manager.move_servo(
+                        payload["index"],
+                        payload["position"],
+                        payload.get("seconds", 1),
+                        payload.get("steps", 100))
+                    )
             elif topic == "servos/stop":
                 yukon_manager.disable_servo(payload.get("index"))
             elif topic == "motors/stop":
