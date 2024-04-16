@@ -14,5 +14,6 @@ deploy_python_service(
     service_module="robot.services.camera_stream.service",
     service_name="camera_stream",
     service_description="Camera stream service",
+    auto_start=False,
     _sudo=True
 )

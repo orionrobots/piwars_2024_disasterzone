@@ -20,6 +20,7 @@ class PS4ControllerService(service_base.ServiceBase):
     name = "ps4_joypad"
     aim_x = 0
     aim_y = 0
+    camera_stream_running = False
 
     def __init__(self, settings: RobotSettings) -> None:
         self.settings = settings
@@ -77,8 +78,20 @@ class PS4ControllerService(service_base.ServiceBase):
                             self.publish_json("dual_motors/set", {"speed": ROLLERS_SPEED, "index": 0})
                         elif "l2" in joystick.releases:
                             self.publish_json("dual_motors/stop", {"index": 0})
-                        if "triangle" in joystick.presses:
+                        if joystick["select"] and joystick["start"] and joystick["triangle"]:
+                            self.publish_json("launcher/poweroff", {})
+                        elif "triangle" in joystick.presses:
                             self.publish_json("all/stop", {})
+                        if "home" in joystick.presses:
+                            self.publish_json("launcher/restart", "yukon")
+                        if "square" in joystick.presses:
+                            if self.camera_stream_running:
+                                self.publish_json("launcher/stop", "camera_stream")
+                                self.camera_stream_running = False
+                            else:
+                                self.publish_json("launcher/start", "camera_stream")
+                                self.camera_stream_running = True
+
                         sleep(1/50)
             except IOError:
                 # No joystick found, wait for a bit before trying again
