@@ -11,6 +11,6 @@ deploy_python_service(
     service_source_file="robot/services/ps4_joypad/service.py",
     service_module="robot.services.ps4_joypad.service",
     service_name="ps4_joypad",
-    service_description="PS4 Joypad board service",
+    service_description="PS4 Joypad service",
     _sudo=True
 )
