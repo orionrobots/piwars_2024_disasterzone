@@ -208,3 +208,6 @@ orion_disaster_app/android
 # Hardware design backups/outputs
 *.stl
 *.FCBak
+hardware/freecad_designs/stls/BigOleYellow-Hull2_Body.3mf
+hardware/freecad_designs/stls/NerfPlate-NerfPlateBody.3mf
+hardware/freecad_designs/stls/rhrb.gx
