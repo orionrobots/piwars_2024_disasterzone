@@ -1,5 +1,5 @@
 from picamera2 import Picamera2
-from libcamera import Transform
+from libcamera import controls, Transform
 
 from bokeh.server.server import Server
 from bokeh.application import Application
@@ -10,8 +10,9 @@ from bokeh.document import Document
 import numpy as np
 
 picam2 = Picamera2()
-# transform = Transform(hflip=1, vflip=1) - , transform=transform
-picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+transform = Transform(hflip=1)
+picam2.configure(picam2.create_preview_configuration(main={"format": 'BGR888', "size": (640, 480)}, transform=transform))
+picam2.set_controls({"AwbMode": controls.AwbModeEnum.Auto})
 picam2.start()
 
 
@@ -20,9 +21,9 @@ class CameraStream(Handler):
         source = ColumnDataSource(data=dict(image=[]))
         def update():
             im = picam2.capture_array()
-            im = im[:, :, :3]  # Drop the X channel if present, keeping only RGB
-            im = np.insert(im, 3, 255, axis=2)  # Insert an alpha channel
-            im_rgba = im.view(dtype=np.uint32).reshape(im.shape[0], im.shape[1])
+            # Add an alpha channel set to 255 (fully opaque)
+            im_rgba = np.dstack((im, np.full((im.shape[0], im.shape[1], 1), 255, dtype=np.uint8)))
+            im_rgba = im_rgba.view(dtype=np.uint32).reshape(im.shape[0], im.shape[1])
             source.data = dict(image=[im_rgba])
         doc.add_periodic_callback(update, 100)
         plot = figure(x_range=(0, 640), y_range=(0, 480), width=640, height=480)
