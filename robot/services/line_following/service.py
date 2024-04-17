@@ -5,7 +5,6 @@ from paho.mqtt.client import MQTTMessage, Client
 import numpy as np
 
 from robot.common import service_base
-from robot.common.settings import RobotSettings
 from robot.common.pid_control import PIController
 
 

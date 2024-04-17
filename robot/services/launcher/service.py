@@ -4,7 +4,6 @@ from paho.mqtt.client import MQTTMessage, Client
 
 
 from robot.common import service_base
-from robot.common.settings import RobotSettings
 
 class LauncherService(service_base.ServiceBase):
     name = "launcher"
