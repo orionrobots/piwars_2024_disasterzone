@@ -21,6 +21,7 @@ class PS4ControllerService(service_base.ServiceBase):
     aim_x = 0
     aim_y = 0
     camera_stream_running = False
+    line_following_running = False
 
     def __init__(self, settings: RobotSettings) -> None:
         self.settings = settings
@@ -91,6 +92,13 @@ class PS4ControllerService(service_base.ServiceBase):
                             else:
                                 self.publish_json("launcher/start", "camera_stream")
                                 self.camera_stream_running = True
+                        if "circle" in joystick.presses:
+                            if self.line_following_running:
+                                self.publish_json("launcher/stop", "line_following")
+                                self.line_following_running = False
+                            else:
+                                self.publish_json("launcher/start", "line_following")
+                                self.line_following_running = True
 
                         sleep(1/50)
             except IOError:

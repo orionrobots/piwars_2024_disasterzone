@@ -5,6 +5,6 @@ deploy_python_service(
     service_module="robot.services.line_following.service",
     service_name="line_following",
     service_description="Line following service",
-    must_restart=False,
+    auto_start=False,
     _sudo=True
 )
