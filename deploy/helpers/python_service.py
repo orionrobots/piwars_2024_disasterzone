@@ -1,5 +1,5 @@
 """Deploy helper for deploying a service.
-Works as an opperation. 
+Works as an opperation.
 Depends on common code, settings.
 Install the service if it's missing and enable it.
 If they, or the service definition are different, restart the service.
@@ -13,13 +13,15 @@ from robot.common.settings import RobotSettings
 settings = RobotSettings()
 
 @operation
-def deploy_python_service(service_source_file, service_module, service_name, service_description, must_restart=False):
+def deploy_python_service(service_source_file, service_module, service_name, service_description, must_restart=False,
+                          auto_start=True):
     """Deploy a python service to the robot.
     service_source_file is the source python file for the service
     service_module is the python module for the service - the source file but from the top folder with dots
     service_name is the name of the service for use in systemd
     service_description is the description of the service for use in systemd - human readable
     must_restart is a flag to force a restart of the service, even if nothing has changed
+    auto_start is a flag to have this service automatically start. Set to false if expected to be started by the launcher
     """
     # Update the service source file
     source_file_update = files.put(
@@ -47,9 +49,13 @@ def deploy_python_service(service_source_file, service_module, service_name, ser
         service_changed = command
         yield command
     # Enable and restart the service
+    print("service_changed:", service_changed,
+          "made_changes:", made_changes,
+          "common_changed:", update_common.common_changed)
     yield from systemd.service(
         service=f"{service_name}.service",
-        enabled=True,
-        restarted=must_restart or made_changes or service_changed or update_common.common_changed,
+        enabled=auto_start,
+        restarted=auto_start and (must_restart or made_changes or service_changed or update_common.common_changed),
+        running=auto_start,
         daemon_reload=service_changed,
     )
