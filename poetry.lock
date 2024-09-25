@@ -757,13 +757,13 @@ yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
 name = "pyinfra"
-version = "3.1"
+version = "3.1.1"
 description = "pyinfra automates/provisions/manages/deploys infrastructure."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pyinfra-3.1-py2.py3-none-any.whl", hash = "sha256:d3f52d61c9d9bea23175af250299ef60c2d6ebad86f771e3b546dcd96e0dd060"},
-    {file = "pyinfra-3.1.tar.gz", hash = "sha256:96fca7c54201ffe00e452b165662423f27cd2a3ae6c9f0272fb04c61c078dc06"},
+    {file = "pyinfra-3.1.1-py2.py3-none-any.whl", hash = "sha256:c87c75fcc03197ce84cb078838e225669be5cc0c4d4e52e408a9e774a3d183f6"},
+    {file = "pyinfra-3.1.1.tar.gz", hash = "sha256:5209a05897597c8747511bb559809a64a84377ae77424d3869d46583f95f2f30"},
 ]
 
 [package.dependencies]
