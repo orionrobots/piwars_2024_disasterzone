@@ -14,7 +14,7 @@
     "expo": "~49.0.15",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
-    "expo-updates": "~0.18.19",
+    "expo-updates": "~0.26.5",
     "paho-mqtt": "^1.1.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
