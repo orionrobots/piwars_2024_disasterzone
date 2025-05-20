@@ -769,14 +769,14 @@ yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
 name = "pyinfra"
-version = "3.2"
+version = "3.3.1"
 description = "pyinfra automates/provisions/manages/deploys infrastructure."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "pyinfra-3.2-py2.py3-none-any.whl", hash = "sha256:ca8e6f4b51031b3b56b4ab6e7ce4cb749530ec92d6ba22f1f2657e2d20231416"},
-    {file = "pyinfra-3.2.tar.gz", hash = "sha256:ea65f2048860dae6a7d86470d4a7ca67c9e2e82d671e781b849f1e5e163ad6db"},
+    {file = "pyinfra-3.3.1-py2.py3-none-any.whl", hash = "sha256:54297d6f52311d60693a838a1184be4995d7441f78ed5f9eb71dd6738c0e5e36"},
+    {file = "pyinfra-3.3.1.tar.gz", hash = "sha256:8dff68a46f82cc699e8f9f3b1ac5c86377cff4fd74a9ae168281232f7f935cb2"},
 ]
 
 [package.dependencies]
@@ -794,9 +794,9 @@ typeguard = "*"
 typing-extensions = {version = "*", markers = "python_version < \"3.11\""}
 
 [package.extras]
-dev = ["black (==24.8.0)", "coverage (==7.6.1)", "flake8 (==7.1.1)", "flake8-black (==0.3.6)", "flake8-isort (==6.1.1)", "flake8-spellcheck (==0.12.1)", "ipdb", "ipdbplugin", "ipython", "isort (==5.13.2)", "mypy", "myst-parser (==3.0.1)", "pyinfra-guzzle-sphinx-theme (==0.16)", "pytest (==8.3.3)", "pytest-cov (==5.0.0)", "redbaron", "sphinx (==6.2.1)", "twine", "types-PyYAML", "types-cryptography", "types-paramiko", "types-python-dateutil", "types-setuptools", "wheel"]
-docs = ["myst-parser (==3.0.1)", "pyinfra-guzzle-sphinx-theme (==0.16)", "sphinx (==6.2.1)"]
-test = ["black (==24.8.0)", "coverage (==7.6.1)", "flake8 (==7.1.1)", "flake8-black (==0.3.6)", "flake8-isort (==6.1.1)", "isort (==5.13.2)", "mypy", "pytest (==8.3.3)", "pytest-cov (==5.0.0)", "types-PyYAML", "types-cryptography", "types-paramiko", "types-python-dateutil", "types-setuptools"]
+dev = ["black (==25.1.0)", "coverage (==7.7.1)", "flake8 (==7.1.2)", "flake8-black (==0.3.6)", "flake8-isort (==6.1.2)", "flake8-spellcheck (==0.28.0)", "ipdb", "ipdbplugin", "ipython", "isort (==6.0.1)", "mypy", "myst-parser (==4.0.1)", "pyinfra-guzzle-sphinx-theme (==0.17)", "pytest (==8.3.5)", "pytest-cov (==6.0.0)", "pyyaml (==6.0.2)", "redbaron", "sphinx (==8.2.3)", "twine", "types-PyYAML", "types-cryptography", "types-paramiko", "types-python-dateutil", "types-setuptools", "wheel"]
+docs = ["myst-parser (==4.0.1)", "pyinfra-guzzle-sphinx-theme (==0.17)", "sphinx (==8.2.3)"]
+test = ["black (==25.1.0)", "coverage (==7.7.1)", "flake8 (==7.1.2)", "flake8-black (==0.3.6)", "flake8-isort (==6.1.2)", "isort (==6.0.1)", "mypy", "pytest (==8.3.5)", "pytest-cov (==6.0.0)", "pyyaml (==6.0.2)", "types-PyYAML", "types-cryptography", "types-paramiko", "types-python-dateutil", "types-setuptools"]
 
 [[package]]
 name = "pynacl"
@@ -1180,4 +1180,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9"
-content-hash = "3f4a8bee2857b2f97e3cc193e0edf8ae760b084cc71258dcf97fa38340f62437"
+content-hash = "b91edfedd527c5c41414b7612769037e9283710c27d1e3dfab31ac3583a35f8f"
