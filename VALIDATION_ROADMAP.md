@@ -16,7 +16,7 @@ A phased approach to implementing offline validation, reducing dependency on phy
 **Python**:
 - GitHub Actions workflow with Poetry
 - Verify all Python files compile
-- Test on multiple Python versions (3.9, 3.11, 3.12) to ensure compatibility across Pi and development environments
+- Test on Python 3.12
 
 **React Native** (Android only):
 - `npm ci` to install dependencies
@@ -128,9 +128,8 @@ Use **MegaLinter** for comprehensive multi-language linting:
 ## GitHub Issues Structure
 
 ### Epic 1: CI/CD Foundation
-- Set up GitHub Actions for Python builds
+- Set up GitHub Actions for Python builds (Python 3.12)
 - Add React Native Android build validation
-- Configure multi-version Python testing (3.9, 3.11, 3.12)
 - Create PR status check requirements
 - Document CI setup
 
