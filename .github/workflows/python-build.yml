@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +41,12 @@ jobs:
       - name: Verify Python syntax
         run: |
           echo "Checking Python files for syntax errors..."
-          find . -name "*.py" -not -path "./.venv/*" | while read file; do
-            python -m py_compile "$file" || exit 1
-          done
+          find . -name "*.py" \
+            -not -path "./.venv/*" \
+            -not -path "./__pycache__/*" \
+            -not -path "./.git/*" \
+            -not -path "./.pytest_cache/*" \
+            | while read file; do
+              python -m py_compile "$file" || exit 1
+            done
           echo "All Python files have valid syntax."
