@@ -4,12 +4,7 @@ Code for Piwars 2024 robot
 
 ## 📋 Validation Infrastructure
 
-This repository now has a comprehensive plan for offline validation! See:
-- **[VALIDATION_QUICKSTART.md](VALIDATION_QUICKSTART.md)** - Quick overview and getting started
-- **[VALIDATION_ROADMAP.md](VALIDATION_ROADMAP.md)** - Complete strategic roadmap
-- **[VALIDATION_PROJECT_TEMPLATE.md](VALIDATION_PROJECT_TEMPLATE.md)** - GitHub project templates
-
-This will enable testing without deploying to the physical robot, significantly speeding up development.
+See **[VALIDATION_ROADMAP.md](VALIDATION_ROADMAP.md)** for the plan to add offline validation (CI, testing, simulation).
 
 ## road map for motor board
 
